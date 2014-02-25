@@ -38,7 +38,7 @@
     "xml2js": "0.4.1"
   },
   "devDependencies": {
-    "coveralls": "~2.7.1",
+    "coveralls": "~2.8.0",
     "grunt": "~0.4.2",
     "grunt-bump": "~0.0.13",
     "grunt-cli": "~0.1.13",
