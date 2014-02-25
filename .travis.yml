@@ -1,26 +1,25 @@
 language: node_js
 node_js:
-  - '0.10'
+- '0.10'
 before_script:
 - npm install -g grunt-cli
 - ./create_config.sh
 script:
 - npm test
-- node lib/run.js --projectKey ${SPHERE_PROJECT_KEY} --clientId ${SPHERE_CLIENT_ID}
-  --clientSecret ${SPHERE_CLIENT_SECRET}
 notifications:
   hipchat:
     rooms:
-      secure:
+      secure: S5Dg2UevKjAeVDHq6sg1TIanhPGw9KQC3ZYKE5bg4PAN4gJU+pl8C1DQVBWXGNmT4w4E7K46+0Mx3KYw489021FyWqkbUlnN8MKYqKy9r0gI7Cx9S50TZuEyXjOQxDzvdRv2Y5d04CH01/MTJ7wRWb0jFeYkmId2xevFyZn7Xug=
     template:
-    - ! '%{repository}#%{build_number} (%{author}): %{message} (<a href="%{build_url}">Details</a>/<a
-      href="%{compare_url}">Compare</a>)'
+    - '%{repository}#%{build_number} (%{author}): %{message} (<a href="%{build_url}">Details</a>/<a href="%{compare_url}">Compare</a>)'
     format: html
     on_success: change
     on_failure: change
-SPHERE_PROJECT_KEY:
-SPHERE_CLIENT_ID:
-SPHERE_CLIENT_SECRET:
 branches:
   only:
-    - master
+  - master
+env:
+  global:
+  - secure: DZV2Ts99D3/m994a+/AwNGIvHVWOo1kPtB2feeq5Z7jJL30OJOOpR7vafEA0A8yqXRNzD+ow19qrrKjppS72oAgs27IZ2pPBLhm9M4VlugYWpBZ3nsQcIfIZHiD06U8dcYoiGguCXUlib2ji2kabDdWcoVVzIEzsnT6Xen0DwK8=
+  - secure: khS4pM8yjtwqx6avaK0euzU/F/FmYofTr9qEqEmveuveFOP4SPHESBQ28HZfhQFKRHcv1/Ml0JqHk8ZK00aG9tZgP4TTLDKxTcFKV518aliWzH/aDKXN3LC4DmqSmuKTbco3EE63/QquU6kEmp8tPxVw2KHHmCzRnCj//m/a8Ds=
+  - secure: NxYOOpyovIVc2ctQUNwOH8nt5ihcjI1RgBfHxq5e+eJRXIHWPpqCGv+lsQRbKbZeE0GdVhMb5+JCyXXm3Paz71pziXDl4S6vel9duOY5iehQXhdt6HeKUQtAtEFPdh2r6OqvIKiSbuMrtFCfhusgIhLopuzekT2WV7SqmMubQ0Y=
