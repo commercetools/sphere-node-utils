@@ -11,7 +11,8 @@ notifications:
     rooms:
       secure: S5Dg2UevKjAeVDHq6sg1TIanhPGw9KQC3ZYKE5bg4PAN4gJU+pl8C1DQVBWXGNmT4w4E7K46+0Mx3KYw489021FyWqkbUlnN8MKYqKy9r0gI7Cx9S50TZuEyXjOQxDzvdRv2Y5d04CH01/MTJ7wRWb0jFeYkmId2xevFyZn7Xug=
     template:
-    - '%{repository}#%{build_number} (%{author}): %{message} (<a href="%{build_url}">Details</a>/<a href="%{compare_url}">Compare</a>)'
+    - ! '%{repository}#%{build_number} (%{author}): %{message} (<a href="%{build_url}">Details</a>/<a
+      href="%{compare_url}">Compare</a>)'
     format: html
     on_success: change
     on_failure: change
@@ -19,7 +20,10 @@ branches:
   only:
   - master
 env:
-  global:
-  - secure: DZV2Ts99D3/m994a+/AwNGIvHVWOo1kPtB2feeq5Z7jJL30OJOOpR7vafEA0A8yqXRNzD+ow19qrrKjppS72oAgs27IZ2pPBLhm9M4VlugYWpBZ3nsQcIfIZHiD06U8dcYoiGguCXUlib2ji2kabDdWcoVVzIEzsnT6Xen0DwK8=
-  - secure: khS4pM8yjtwqx6avaK0euzU/F/FmYofTr9qEqEmveuveFOP4SPHESBQ28HZfhQFKRHcv1/Ml0JqHk8ZK00aG9tZgP4TTLDKxTcFKV518aliWzH/aDKXN3LC4DmqSmuKTbco3EE63/QquU6kEmp8tPxVw2KHHmCzRnCj//m/a8Ds=
-  - secure: NxYOOpyovIVc2ctQUNwOH8nt5ihcjI1RgBfHxq5e+eJRXIHWPpqCGv+lsQRbKbZeE0GdVhMb5+JCyXXm3Paz71pziXDl4S6vel9duOY5iehQXhdt6HeKUQtAtEFPdh2r6OqvIKiSbuMrtFCfhusgIhLopuzekT2WV7SqmMubQ0Y=
+  global: 
+SFTP_HOST:
+  secure: XG2+AnYdkiYHKgnho628UDg5NPcSsGHiPjCVvk1F97aruGwv0kyBPktOcbWexZnAfZ4hnBjXpaZg032TWDIHFKKvr9MpDArE02PgNs6yAMDu8GyMd7Vc6/BBsLijWnDhfDveN5coYNrzpuAJlt/YEUyvPEskKv+m58SzBwYn/Ok=
+SFTP_USERNAME:
+  secure: NqhRxX+UbvDoXlqPNa7I9nupYaNEsKHYg4wBQ4vRBsIc+P9iqK0SpTCtct7zOozE6dc+D0iRt9pzFRwb2Xz5VvTw7HlcQTjH8AN0gyHI8hDMxjBeLzSnLBru9a1a8XPNgJvKl8KRJt0BZ5gaBP2rGqZWJEpa4Fgjl8TvEzwVXko=
+SFTP_PASSWORD:
+  secure: DeRm4u2sLbiZMjYRN/WOKTqIgC76qTSZL0+IWFz2zecrMMDLMTCa5aw0DKcAPYoo/RBV6pMfmpsPeTIHl4sxgdpc4W8sqLIL5v94rm22VAlDfGEOg/4YXeNvza6YnsMhdEU78fJKeAkKV0zfVi2r7jxvBmPC7bZqKBEilVyOlh4=
