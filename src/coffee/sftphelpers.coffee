@@ -11,7 +11,7 @@ class SftpHelpers
 
   listFiles: (sftp, dirName) ->
     deferred = Q.defer()
-    
+
     sftp.opendir dirName, (err, handle) ->
       if err
         deferred.reject err
@@ -34,6 +34,16 @@ class SftpHelpers
   saveFile: (path, fileName, content) ->
     # TODO
 
+  getFile: (sftp, remotePath, localPath) ->
+    deferred = Q.defer()
+
+    sftp.fastGet remotePath, localPath, (err) ->
+      if err
+        deferred.reject err
+      else
+        deferred.resolve()
+    deferred.promise
+
   openSftp: ->
     deferred = Q.defer()
 
@@ -47,25 +57,25 @@ class SftpHelpers
           sftp.on 'end', ->
             console.log 'SFTP :: end'
           deferred.resolve sftp
-    
+
     @conn.on 'error', (err) ->
       console.log 'Connection :: error - msg: ' + err
     @conn.on 'close', (hadError) ->
       console.log 'Connection :: close - had error: ' + hadError
     @conn.on 'end', ->
       console.log 'Connection :: end'
-    
+
     @conn.connect
       host: @host
       username: @username
       password: @password
-    
+
     deferred.promise
 
   close: (sftp) ->
     if sftp
       sftp.end()
     @conn.end()
-         
+
 
 module.exports = SftpHelpers
