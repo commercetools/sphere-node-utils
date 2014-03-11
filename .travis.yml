@@ -19,9 +19,8 @@ notifications:
 branches:
   only:
   - master
-SFTP_HOST:
-  secure: DcNdbcVfy2R+WijD4nFxsNlvSRB3AxB/v2FCuvonqViUqcajsTySQfqnwnVkxASMuYUqyHb6lHENoeNHrO9o0kezHs/kz3MvQ6SsuWsEYUM9fshThF5BbgBV5Voxd3cpFgck++KEyuAXD9bQvuTUHAx2Qvsbj8vPq5jVkTZU/Xs=
-SFTP_USERNAME:
-  secure: CL8BJCIZqsN+aiGqTct7WvGE5hAiTIp3Hfs3WFJOughy6Q+o4GQx3TXtoj1/oFbSX2Ag7dNsi0LP8ZhdhpJxltMjawFENTZCT5FSQRbppo/DKxEHqakGUeosEaiBBkddSqjZmArLSCmw70nNnEWDZn71sDBd8YWQ9P1SpGiecfg=
-SFTP_PASSWORD:
-  secure: Ol7Rtnc1AQTqeuGOqZtzrhCRkq+R+lCViJYiSAwFo+RyPzXfTOyI/5+zOd3nFG3f1AJG9PJMUDgJZPsQA6k95zjHM2E3m5/5fIV2nDy9QRxLFeT6MjAYdp8TsRo4VjLBeHA+3fjdTuo+bTBDcbQZJ/nilXbx8NkKHLNMM7Z5gXI=
+env:
+  global:
+  - secure: Gu2ancgh3PEurf5XmaIRE9Isg7wXeha4k6T07Azc0ey2bsrV0eTAiuyZgj0r/xRwfKoxlLH1TFXYWfQ00UXc9Fx2JiXCbKzBLE6ztFjIr1wUh2slHlhowugRtGv7t9K1cfEwqww+sdJcHnIKcL7D+oKEjCNbXpfYioCAL8Jxy7g=
+  - secure: Mtrlp8aPdPFAoLTb4iJZL0jj/l6/iNxA5h98BRhlAf0ZAAebDhM+GOaIb4NVh5YR0smFZZavRhsJ7CY+5Qg+qxx4zo5FGgi9nf7UpBMVBTJn/nSyp7K0Kvma9WALiW/m937TcP22Oo7WGpQ20Yvv2kDA1h3tU5wR4AdpvUZPxig=
+  - secure: dU1Ovn59Dz3nWvOhzxXD0GIDmVufJ6h/gqQafFh+q0gwTTktQj3kq9jjnHwvEqypiZKGNWsFU4mqCO2GZUB803oLCOYQsC4ZQFzqNdNVVTWKITgN0UKWH6OyVRLtBnnYSbs/sMNu0M6fvr3RJ2BsP2Fd7BCiyel+9xhPAadFInE=
