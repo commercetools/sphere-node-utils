@@ -20,12 +20,15 @@ describe 'SftpHelpers', ->
       done()
 
   it 'should list files', (done) ->
-    @helpers.openSftp().then (sftp) =>
-      @helpers.listFiles(sftp, '/data').then (files) =>
-        expect(_.size files).toBeGreaterThan 0
-        @helpers.close sftp
-        done()
-    .fail (result) ->
-      console.log result
-      expect(true).toBe false
+    @sftp
+    @helpers.openSftp()
+    .then (sftp) =>
+      @sftp = sftp
+      @helpers.listFiles(sftp, '/upload/data')
+    .then (files) =>
+      expect(_.size files).toBeGreaterThan 0
+      @helpers.close @sftp
       done()
+    .fail (result) =>
+      @helpers.close @sftp
+      done(result)
