@@ -42,9 +42,13 @@ describe 'SftpHelpers', ->
     TEST_FILE = 'test.txt'
 
     afterEach (done) ->
-      fs.unlink "./#{TEST_FILE}", (err) ->
-        if err
-          done(err)
+      fs.exists "./#{TEST_FILE}", (exists) ->
+        if exists
+          fs.unlink "./#{TEST_FILE}", (err) ->
+            if err
+              done(err)
+            else
+              done()
         else
           done()
 
@@ -62,3 +66,17 @@ describe 'SftpHelpers', ->
       .fail (result) =>
         @helpers.close @sftp
         done(result)
+
+    it 'should handle error properly', (done) ->
+
+      @sftp
+      @helpers.openSftp()
+      .then (sftp) =>
+        @sftp = sftp
+        @helpers.getFile(sftp, "/wrong", "./#{TEST_FILE}")
+      .then =>
+        @helpers.close @sftp
+        done('should call fail() method.')
+      .fail (result) =>
+        @helpers.close @sftp
+        done()
