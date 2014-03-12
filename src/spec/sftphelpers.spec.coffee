@@ -51,12 +51,14 @@ describe 'SftpHelpers', ->
     it 'should download file from remote server', (done) ->
 
       @sftp
-      @helpers.openSftp().then (sftp) =>
+      @helpers.openSftp()
+      .then (sftp) =>
         @sftp = sftp
-        @helpers.getFile(sftp, "#{REMOTE_ROOT}/#{TEST_FILE}", "./#{TEST_FILE}").then =>
-          expect(fs.existsSync(TEST_FILE)).toBe true
-          @helpers.close @sftp
-          done()
-      .fail (result) ->
+        @helpers.getFile(sftp, "#{REMOTE_ROOT}/#{TEST_FILE}", "./#{TEST_FILE}")
+      .then =>
+        expect(fs.existsSync(TEST_FILE)).toBe true
+        @helpers.close @sftp
+        done()
+      .fail (result) =>
         @helpers.close @sftp
         done(result)
