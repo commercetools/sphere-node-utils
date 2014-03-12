@@ -9,6 +9,12 @@ class SftpHelpers
     @username = options.username
     @password = options.password
 
+  ###
+  Get directory entries.
+  @param {object} sftp SFTP handle.
+  @param {string} Directory to get the entries from.
+  @return Promise
+  ###
   listFiles: (sftp, dirName) ->
     deferred = Q.defer()
 
@@ -34,6 +40,13 @@ class SftpHelpers
   saveFile: (path, fileName, content) ->
     # TODO
 
+  ###
+  Downloads a file.
+  @param {object} sftp SFTP handle.
+  @param {string} remotePath Path of the remote file.
+  @param {string} localPath Download file to this path.
+  @return Promise
+  ###
   getFile: (sftp, remotePath, localPath) ->
     deferred = Q.defer()
 
@@ -44,6 +57,10 @@ class SftpHelpers
         deferred.resolve()
     deferred.promise
 
+  ###
+  Starts an SFTP session.
+  @return Promise
+  ###
   openSftp: ->
     deferred = Q.defer()
 
@@ -72,6 +89,10 @@ class SftpHelpers
 
     deferred.promise
 
+  ###
+  Close SFTP session and underlying connection.
+  @return Promise
+  ###
   close: (sftp) ->
     if sftp
       sftp.end()
