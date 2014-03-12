@@ -58,6 +58,23 @@ class SftpHelpers
     deferred.promise
 
   ###
+  Move/rename a remote resource.
+  @param {object} sftp SFTP handle.
+  @param {string} srcPath Source path of the remote resource.
+  @param {string} destPath Destination path of the remote resource.
+  @return Promise
+  ###
+  moveFile: (sftp, srcPath, destPath) ->
+    deferred = Q.defer()
+
+    sftp.rename srcPath, destPath, (err) ->
+      if err
+        deferred.reject err
+      else
+        deferred.resolve()
+    deferred.promise
+
+  ###
   Starts an SFTP session.
   @return Promise
   ###
