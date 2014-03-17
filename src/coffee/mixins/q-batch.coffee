@@ -79,8 +79,6 @@ module.exports =
       offset: 0
     limit = params.limit
 
-    console.log params
-
     _toQueryString = (offset) ->
       extended = _.extend {}, params,
         offset: offset
@@ -108,7 +106,6 @@ module.exports =
       else
         queryParams = _toQueryString(offset)
         rest.GET "#{endpoint}?#{queryParams}", (error, response, body) ->
-          console.log deferred
           deferred.notify
             percentage: if total then _.percentage(total - (offset + limit), total) else 0
             value: accumulator
