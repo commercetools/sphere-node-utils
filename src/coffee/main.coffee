@@ -1,1 +1,1 @@
-exports.SftpHelpers = require './helpers/sftp'
+exports.Sftp = require './helpers/sftp'

@@ -30,13 +30,9 @@
     "test": "grunt coverage"
   },
   "dependencies": {
-    "libxmljs": "0.8.1",
-    "optimist": "0.6.1",
     "q": "1.0.0",
     "ssh2": "0.2.17",
-    "underscore": "1.6.0",
-    "underscore.string": "2.3.3",
-    "xml2js": "0.4.1"
+    "underscore": "1.6.0"
   },
   "devDependencies": {
     "coveralls": "~2.8.0",
