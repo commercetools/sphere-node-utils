@@ -55,8 +55,9 @@ _(Coming soon)_
 Currently following mixins are provided by `SphereUtils`:
 
 - `Qbatch`
+  - `all`
 
-#### Batch processing
+#### Qbatch (batch processing)
 Batch processing allows a list of promises to be executed in chunks, by defining a limit to how many requests can be sent in parallel.
 The `batch` function is actually a promise itself which recursively resolves all given promises in batches.
 
@@ -64,7 +65,7 @@ The `batch` function is actually a promise itself which recursively resolves all
 # let's assume we have a bunch of promises (e.g.: 200)
 allPromises = [p1, p2, p3, ...]
 
-Qbatch(allPromises)
+Qbatch.all(allPromises)
 .then (result) ->
 .fail (error) ->
 ```
