@@ -2,7 +2,7 @@ fs = require 'fs'
 Q = require 'q'
 _ = require 'underscore'
 Connection = require 'ssh2'
-Config = require '../../config'
+SftpConfig = require('../../config').config.sftp
 SftpHelpers = require '../../lib/helpers/sftp'
 
 describe 'SftpHelpers', ->
@@ -15,7 +15,7 @@ describe 'SftpHelpers', ->
   FILE_LOCAL_DOWNLOAD = "./#{TEST_FILE}"
 
   beforeEach (done) ->
-    @helpers = new SftpHelpers Config.config
+    @helpers = new SftpHelpers SftpConfig
 
     # initialize sftp session used for validating remote changes
     @_conn = new Connection()
@@ -29,9 +29,9 @@ describe 'SftpHelpers', ->
           done()
 
     @_conn.connect
-      host: Config.config.host
-      username: Config.config.username
-      password: Config.config.password
+      host: SftpConfig.host
+      username: SftpConfig.username
+      password: SftpConfig.password
 
   afterEach (done) ->
     @_sftp.end()

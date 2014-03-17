@@ -12,7 +12,8 @@ This module shares helpers among all [SPHERE.IO](http://sphere.io/) Node.js comp
   * [Helpers](#helpers)
     * [Sftp](#sftp)
   * [Mixins](#mixins)
-    * [Batch processing](#batch-processing)
+    * [Qbatch.all (batch processing)](#batch-processing)
+    * [Qbatch.paged (batch processing of paged results)](#batch-processing)
 * [Examples](#examples)
 * [Releasing](#releasing)
 * [License](#license)
@@ -56,10 +57,11 @@ Currently following mixins are provided by `SphereUtils`:
 
 - `Qbatch`
   - `all`
+  - `paged`
 
-#### Qbatch (batch processing)
+#### Qbatch.all (batch processing)
 Batch processing allows a list of promises to be executed in chunks, by defining a limit to how many requests can be sent in parallel.
-The `batch` function is actually a promise itself which recursively resolves all given promises in batches.
+The `Qbatch.all` function is actually a promise itself which recursively resolves all given promises in batches.
 
 ```coffeescript
 # let's assume we have a bunch of promises (e.g.: 200)
@@ -83,6 +85,41 @@ You can also subscribe to **progress notifications** of the promise
 
 ```coffeescript
 Qbatch(allPromises)
+.then (result) ->
+.progress (progress) ->
+  # progress is an object containing the current progress percentage
+  # and the value of the current results (array)
+  # {percentage: 20, value: [r1, r2, r3, ...]}
+.fail (error) ->
+```
+
+#### Qbatch.paged (batch processing of paged results)
+Batch processing of paged results allows to safely query all results (=> `limit=0`) in chunks.
+The `Qbatch.paged` function is actually a promise itself which recursively accumulates the paged results, returning all of them together.
+
+```coffeescript
+rest = new Rest options
+
+Qbatch.paged(rest, '/products')
+.then (result) ->
+.fail (error) ->
+```
+
+> Note that ba using this function, the `limit` is considered to be 0, meaning all results are queried. So given `limit` and `offset` parameters will be ignored.
+
+```coffeescript
+# with query params
+rest = new Rest options
+
+Qbatch.paged(rest, '/products?where=name%3D%22Foo%22&staged=true')
+.then (result) ->
+.fail (error) ->
+```
+
+You can also subscribe to **progress notifications** of the promise
+
+```coffeescript
+Qbatch(rest, '/products')
 .then (result) ->
 .progress (progress) ->
   # progress is an object containing the current progress percentage

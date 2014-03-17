@@ -1,5 +1,7 @@
 Q = require 'q'
 _ = require 'underscore'
+{Rest} = require 'sphere-node-connect'
+ApiConfig = require('../../config').config.api
 Qbatch = require '../../lib/mixins/q-batch'
 
 describe 'Mixins', ->
@@ -45,4 +47,24 @@ describe 'Mixins', ->
       .progress (progress) ->
         expect(progress.percentage).toBe expectedProgress
         expectedProgress += 1
+      .fail (err) -> done(err)
+
+
+  describe 'Qbatch :: paged', ->
+
+    beforeEach ->
+      @rest = new Rest config: ApiConfig
+
+    it 'should fetch products in batches', (done) ->
+      spyOn(@rest, 'GET').andCallFake (endpoint, callback) -> callback null, {statusCode: 200},
+        total: 1000
+        results: _.map [1..50], (i) -> {id: _.uniqueId("_#{i}"), value: 'foo'}
+
+      Qbatch.paged(@rest, '/product-projections')
+      .then (products) ->
+        expect(products.total).toBe 1000
+        expect(products.count).toBe 1000
+        expect(products.offset).toBe 0
+        expect(products.results.length).toBe 1000
+        done()
       .fail (err) -> done(err)
