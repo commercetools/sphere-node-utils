@@ -1,19 +1,16 @@
 Q = require 'q'
-_ = require('underscore')._
+_ = require 'underscore'
 Connection = require 'ssh2'
 
 class SftpHelpers
 
-  constructor: (options = {}) ->
-    @host = options.host
-    @username = options.username
-    @password = options.password
+  constructor: (@_options = {}) ->
 
-  ###
-  Get directory entries.
-  @param {object} sftp SFTP handle.
-  @param {string} Directory to get the entries from.
-  @return Promise
+  ###*
+   * Get directory entries.
+   * @param {Object} sftp SFTP handle
+   * @param {String} dirName Directory to get the entries from
+   * @return {Promise} A promise, fulfilled with an {Array} or rejected with an error
   ###
   listFiles: (sftp, dirName) ->
     deferred = Q.defer()
@@ -27,7 +24,7 @@ class SftpHelpers
             deferred.reject err
           else
             if list is false
-              deferred.resolve [] # return an empty arry
+              deferred.resolve [] # return an empty array
             else
               deferred.resolve list
           sftp.close handle
@@ -40,12 +37,12 @@ class SftpHelpers
   saveFile: (path, fileName, content) ->
     # TODO
 
-  ###
-  Downloads a file.
-  @param {object} sftp SFTP handle.
-  @param {string} remotePath Path of the remote file.
-  @param {string} localPath Download file to this path.
-  @return Promise
+  ###*
+   * Download a file.
+   * @param {Object} sftp SFTP handle
+   * @param {String} remotePath Path of the remote file
+   * @param {String} localPath Download file to this path
+   * @return {Promise} A promise, fulfilled with an {Object} or rejected with an error
   ###
   getFile: (sftp, remotePath, localPath) ->
     deferred = Q.defer()
@@ -57,12 +54,12 @@ class SftpHelpers
         deferred.resolve()
     deferred.promise
 
-  ###
-  Move/rename a remote resource.
-  @param {object} sftp SFTP handle.
-  @param {string} srcPath Source path of the remote resource.
-  @param {string} destPath Destination path of the remote resource.
-  @return Promise
+  ###*
+   * Move/rename a remote resource.
+   * @param {Object} sftp SFTP handle
+   * @param {String} srcPath Source path of the remote resource
+   * @param {String} destPath Destination path of the remote resource
+   * @return {Promise} A promise, fulfilled with an {Object} or rejected with an error
   ###
   moveFile: (sftp, srcPath, destPath) ->
     deferred = Q.defer()
@@ -74,14 +71,15 @@ class SftpHelpers
         deferred.resolve()
     deferred.promise
 
-  ###
-  Starts an SFTP session.
-  @return Promise
+  ###*
+   * Starts a SFTP session.
+   * @return {Promise} A promise, fulfilled with an {Object} or rejected with an error
   ###
   openSftp: ->
     deferred = Q.defer()
 
     @conn = new Connection()
+    # TODO: use Logger ?
     @conn.on 'ready', =>
       console.log 'Connection :: ready'
       @conn.sftp (err, sftp) ->
@@ -100,19 +98,19 @@ class SftpHelpers
       console.log 'Connection :: end'
 
     @conn.connect
-      host: @host
-      username: @username
-      password: @password
+      host: @_options.host
+      username: @_options.username
+      password: @_options.password
 
     deferred.promise
 
-  ###
-  Close SFTP session and underlying connection.
-  @return Promise
+  ###*
+   * Close SFTP session and underlying connection.
+   * @param {Object} sftp SFTP handle
+   * @return {Promise} A promise, fulfilled with an {Object} or rejected with an error
   ###
   close: (sftp) ->
-    if sftp
-      sftp.end()
+    sftp.end() if sftp
     @conn.end()
 
 

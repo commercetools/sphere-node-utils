@@ -1,1 +1,1 @@
-exports.Connector = require('./lib/connector')
+exports.Connector = require './lib/connector'

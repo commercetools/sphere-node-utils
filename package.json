@@ -3,6 +3,7 @@
   "description": "Helpers to share among all SPHERE.IO node components.",
   "version": "0.0.1",
   "homepage": "https://github.com/sphereio/sphere-node-utils",
+  "private": true,
   "author": {
     "name": "Hajo Eichler",
     "email": "hajo.eichler@commercetools.com",
@@ -29,28 +30,27 @@
     "test": "grunt coverage"
   },
   "dependencies": {
+    "libxmljs": "0.8.1",
     "optimist": "0.6.1",
-    "underscore": "1.6.0",
-    "underscore.string": "2.3.3",
     "q": "1.0.0",
     "ssh2": "0.2.17",
-    "libxmljs": "0.8.1",
+    "underscore": "1.6.0",
+    "underscore.string": "2.3.3",
     "xml2js": "0.4.1"
   },
   "devDependencies": {
     "coveralls": "~2.8.0",
     "grunt": "~0.4.2",
     "grunt-bump": "~0.0.13",
-    "grunt-cli": "~0.1.13",
     "grunt-coffeelint": "~0.0.8",
     "grunt-contrib-clean": "~0.5.0",
-    "grunt-contrib-coffee": "~0.10.0",
+    "grunt-contrib-coffee": "~0.10.1",
     "grunt-contrib-concat": "~0.3.0",
     "grunt-contrib-watch": "~0.5.3",
     "grunt-shell": "~0.6.4",
     "istanbul": "~0.2.4",
     "jasmine-node": "~1.13.1",
-    "sphere-coffeelint": "git://github.com/sphereio/sphere-coffeelint.git#master"
+    "sphere-coffeelint": "sphereio/sphere-coffeelint.git#master"
   },
   "keywords": []
 }

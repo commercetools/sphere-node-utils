@@ -1,8 +1,10 @@
 node_modules
-npm-debug.log
+*.log
 src
 test
 coverage
 .travis.yml
 .coveralls.yml
 *.coffee
+create_config.sh
+config.js

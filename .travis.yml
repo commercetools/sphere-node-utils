@@ -1,26 +1,22 @@
 language: node_js
 node_js:
-- '0.10'
+  - '0.10'
 before_script:
-- npm install -g grunt-cli
-- ./create_config.sh
-script:
-- npm test
+  - npm install -g grunt-cli
+env:
+  global:
+    - secure: Gu2ancgh3PEurf5XmaIRE9Isg7wXeha4k6T07Azc0ey2bsrV0eTAiuyZgj0r/xRwfKoxlLH1TFXYWfQ00UXc9Fx2JiXCbKzBLE6ztFjIr1wUh2slHlhowugRtGv7t9K1cfEwqww+sdJcHnIKcL7D+oKEjCNbXpfYioCAL8Jxy7g=
+    - secure: Mtrlp8aPdPFAoLTb4iJZL0jj/l6/iNxA5h98BRhlAf0ZAAebDhM+GOaIb4NVh5YR0smFZZavRhsJ7CY+5Qg+qxx4zo5FGgi9nf7UpBMVBTJn/nSyp7K0Kvma9WALiW/m937TcP22Oo7WGpQ20Yvv2kDA1h3tU5wR4AdpvUZPxig=
+    - secure: dU1Ovn59Dz3nWvOhzxXD0GIDmVufJ6h/gqQafFh+q0gwTTktQj3kq9jjnHwvEqypiZKGNWsFU4mqCO2GZUB803oLCOYQsC4ZQFzqNdNVVTWKITgN0UKWH6OyVRLtBnnYSbs/sMNu0M6fvr3RJ2BsP2Fd7BCiyel+9xhPAadFInE=
 notifications:
   hipchat:
     rooms:
-      secure: S5Dg2UevKjAeVDHq6sg1TIanhPGw9KQC3ZYKE5bg4PAN4gJU+pl8C1DQVBWXGNmT4w4E7K46+0Mx3KYw489021FyWqkbUlnN8MKYqKy9r0gI7Cx9S50TZuEyXjOQxDzvdRv2Y5d04CH01/MTJ7wRWb0jFeYkmId2xevFyZn7Xug=
+      - secure: S5Dg2UevKjAeVDHq6sg1TIanhPGw9KQC3ZYKE5bg4PAN4gJU+pl8C1DQVBWXGNmT4w4E7K46+0Mx3KYw489021FyWqkbUlnN8MKYqKy9r0gI7Cx9S50TZuEyXjOQxDzvdRv2Y5d04CH01/MTJ7wRWb0jFeYkmId2xevFyZn7Xug=
     template:
-    - ! '%{repository}#%{build_number} (%{author}): %{message} (<a href="%{build_url}">Details</a>/<a
-      href="%{compare_url}">Compare</a>)'
+      - '%{repository}#%{build_number} (%{author}): %{message} (<a href="%{build_url}">Details</a> / <a href="%{compare_url}">Compare</a>)'
     format: html
     on_success: change
     on_failure: change
 branches:
   only:
-  - master
-env:
-  global:
-  - secure: Gu2ancgh3PEurf5XmaIRE9Isg7wXeha4k6T07Azc0ey2bsrV0eTAiuyZgj0r/xRwfKoxlLH1TFXYWfQ00UXc9Fx2JiXCbKzBLE6ztFjIr1wUh2slHlhowugRtGv7t9K1cfEwqww+sdJcHnIKcL7D+oKEjCNbXpfYioCAL8Jxy7g=
-  - secure: Mtrlp8aPdPFAoLTb4iJZL0jj/l6/iNxA5h98BRhlAf0ZAAebDhM+GOaIb4NVh5YR0smFZZavRhsJ7CY+5Qg+qxx4zo5FGgi9nf7UpBMVBTJn/nSyp7K0Kvma9WALiW/m937TcP22Oo7WGpQ20Yvv2kDA1h3tU5wR4AdpvUZPxig=
-  - secure: dU1Ovn59Dz3nWvOhzxXD0GIDmVufJ6h/gqQafFh+q0gwTTktQj3kq9jjnHwvEqypiZKGNWsFU4mqCO2GZUB803oLCOYQsC4ZQFzqNdNVVTWKITgN0UKWH6OyVRLtBnnYSbs/sMNu0M6fvr3RJ2BsP2Fd7BCiyel+9xhPAadFInE=
+    - master

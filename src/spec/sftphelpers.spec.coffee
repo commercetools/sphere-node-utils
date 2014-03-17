@@ -1,9 +1,9 @@
-_ = require 'underscore'
-SftpHelpers = require '../lib/sftphelpers'
-Config = require '../config'
 fs = require 'fs'
 Q = require 'q'
+_ = require 'underscore'
 Connection = require 'ssh2'
+Config = require '../config'
+SftpHelpers = require '../lib/sftphelpers'
 
 describe 'SftpHelpers', ->
 
