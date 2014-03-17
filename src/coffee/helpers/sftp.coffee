@@ -2,7 +2,7 @@ Q = require 'q'
 _ = require 'underscore'
 Connection = require 'ssh2'
 
-class SftpHelpers
+class Sftp
 
   constructor: (@_options = {}) ->
 
@@ -114,4 +114,4 @@ class SftpHelpers
     @conn.end()
 
 
-module.exports = SftpHelpers
+module.exports = Sftp
