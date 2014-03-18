@@ -34,7 +34,7 @@ module.exports =
    * @param {Object} params A JSON object containing key-value query params
    * @retrun {String} A query string, or empty if params is undefined
   ###
-  toQueryString: (params) ->
+  stringifyQuery: (params) ->
     return "" unless params
     query = _.reduce params, (memo, value, key) ->
       memo.push "#{key}=#{value}"
@@ -47,7 +47,7 @@ module.exports =
    * @param {String} query A query string
    * @retrun {Object} A JSON object (note that all values are parsed as string)
   ###
-  fromQueryString: (query) ->
+  parseQuery: (query) ->
     return {} unless query
     _.reduce query.split('&'), (memo, param) ->
       splitted = param.split('=')
