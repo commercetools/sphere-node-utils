@@ -14,6 +14,10 @@ This module shares helpers among all [SPHERE.IO](http://sphere.io/) Node.js comp
   * [Mixins](#mixins)
     * [Qbatch.all (batch processing)](#qbatchall-batch-processing)
     * [Qbatch.paged (batch processing of paged results)](#qbatchpaged-batch-processing-of-paged-results)
+    * [Underscore](#underscore)
+      * [_.deepClone](#)
+      * [_.toQueryString](#)
+      * [_.fromQueryString](#)
 * [Examples](#examples)
 * [Releasing](#releasing)
 * [License](#license)
@@ -126,6 +130,48 @@ Qbatch(rest, '/products')
   # and the value of the current results (array)
   # {percentage: 20, value: [r1, r2, r3, ...]}
 .fail (error) ->
+```
+
+#### Underscore
+A collection of methods to be used as `underscore` mixins. To install
+
+```coffeescript
+_ = require 'underscore'
+{_u} = require 'sphere-node-utils'
+_.mixin _u
+
+# or
+_.mixin require('sphere-node-utils')._u
+```
+
+##### `_.deepClone`
+Returns a deep clone of the given object
+
+```coffeescript
+obj = {...} # some object with nested values
+cloned = _.deepClone(obj)
+```
+
+##### `_.toQueryString`
+Returns a URL query string from a key-value object
+
+```coffeescript
+params =
+  where: encodeURIComponent('name = "Foo"')
+  staged: true
+  limit: 100
+  offset: 2
+_.toQueryString(params)
+# => 'where=name%20%3D%20%22Foo%22&staged=true&limit=100&offset=2'
+```
+
+##### `_.fromQueryString`
+Returns a key-value JSON object from a query string
+
+```coffeescript
+query = 'where=name%20%3D%20%22Foo%22&staged=true&limit=100&offset=2'
+_.fromQueryString(query)
+# => {where: encodeURIComponent('name = "Foo"'), staged: 'true', limit: '100', offset: '2'}
 ```
 
 ## Examples
