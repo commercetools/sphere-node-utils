@@ -1,4 +1,4 @@
-{Sftp, Qbatch} = require '../lib/main'
+{Sftp, Qbatch, _u} = require '../lib/main'
 
 describe "exports", ->
 
@@ -7,3 +7,6 @@ describe "exports", ->
 
   it "Qbatch", ->
     expect(Qbatch).toBeDefined()
+
+  it "_u", ->
+    expect(_u).toBeDefined()
