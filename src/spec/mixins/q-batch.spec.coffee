@@ -56,22 +56,3 @@ describe 'Mixins', ->
         expect(results).toEqual _.map [1..1000], (i) -> value: 100
         done()
       .fail (err) -> done(err)
-
-  describe 'Qbatch :: paged', ->
-
-    beforeEach ->
-      @rest =
-        GET: (endpoint, callback) ->
-          callback null, {statusCode: 200},
-            total: 1000
-            results: _.map [1..50], (i) -> {id: _.uniqueId("_#{i}"), value: 'foo'}
-
-    it 'should fetch products in batches', (done) ->
-      Qbatch.paged(@rest, '/product-projections')
-      .then (products) ->
-        expect(products.total).toBe 1000
-        expect(products.count).toBe 1000
-        expect(products.offset).toBe 0
-        expect(products.results.length).toBe 1000
-        done()
-      .fail (err) -> done(err)

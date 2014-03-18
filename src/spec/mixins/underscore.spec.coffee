@@ -48,6 +48,14 @@ describe 'Mixins', ->
                   ]
       expect(_u.deepClone(obj)).toEqual expectedObj
 
+  describe '_u :: percentage', ->
+
+    it 'should calculate value', ->
+      expect(_u.percentage 10, 100).toBe 10
+
+    it 'should calculate rounded value', ->
+      expect(_u.percentage 33, 1010).toBe 3
+
   describe '_u :: toQueryString', ->
 
     it 'should parse string from object', ->

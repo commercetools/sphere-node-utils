@@ -22,6 +22,14 @@ module.exports =
     JSON.parse(JSON.stringify(obj))
 
   ###*
+   * Returns the percentage of the given values
+   * @param {Number} x The current number out of total
+   * @param {Number} tot The total number to calculate the percentage
+   * @retrun {Number} The percentage value, rounded
+  ###
+  percentage: (x, tot) -> Math.round(x * 100 / tot)
+
+  ###*
    * Returns a URL query string from a key-value object
    * @param {Object} params A JSON object containing key-value query params
    * @retrun {String} A query string, or empty if params is undefined
