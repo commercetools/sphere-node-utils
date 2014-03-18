@@ -10,6 +10,7 @@ This module shares helpers among all [SPHERE.IO](http://sphere.io/) Node.js comp
 * [Getting Started](#getting-started)
 * [Documentation](#documentation)
   * [Helpers](#helpers)
+    * [Logger](#logger)
     * [Sftp](#sftp)
   * [Mixins](#mixins)
     * [Qbatch.all (batch processing)](#qbatchall-batch-processing)
@@ -51,7 +52,85 @@ SphereUtils = require 'sphere-node-utils'
 ### Helpers
 Currently following helpers are provided by `SphereUtils`:
 
+- `Logger`
 - `Sftp`
+
+#### Logger
+Logging is supported by the lightweight JSON logging module called [Bunyan](https://github.com/trentm/node-bunyan).
+
+The `Logger` can be configured with following options
+```coffeescript
+logConfig:
+  levelStream: 'info' # log level for stdout stream
+  levelFile: 'debug' # log level for file stream
+  path: './sphere-node-utils-debug.log' # where to write the file stream
+  name: 'sphere-node-utils' # name of the application
+  serializers:
+    request: reqSerializer # function that maps the request object with fields (uri, method, headers)
+    response: resSerializer # function that maps the response object with fields (status, headers, body)
+  src: false # includes a log of the call source location (file, line, function).
+             # Determining the source call is slow, therefor it's recommended not to enable this on production.
+  streams: [ # a list of streams that defines the type of output for log messages
+    {level: 'info', stream: process.stdout}
+    {level: 'debug', path: './sphere-node-utils-debug.log'}
+  ]
+```
+
+> A `Logger` instance should be extended by the component that needs logging by providing the correct configuration
+
+```coffeescript
+{Logger} = require 'sphere-node-utils'
+
+module.exports = class extends Logger
+
+  # we can override here some of the configuration options
+  @appName: 'my-application-name'
+  @path: './my-application-name.log'
+```
+
+A `Bunyan` logger can also be created from another existing logger. This is useful to connect sub-components of the same application by sharing the same configuration.
+This concept is called **[child logger](https://github.com/trentm/node-bunyan#logchild)**.
+
+```coffeescript
+{Logger} = require 'sphere-node-utils'
+class MyCustomLogger extends Logger
+  @appName: 'my-application-name'
+
+myLogger = new MyCustomLogger logConfig
+
+# assume we have a component which already implements logging
+appWithLogger = new AppWithLogger
+  logConfig:
+    logger: myLogger
+
+# now we can use `myLogger` to log and everything logged from the child logger of `AppWithLogger`
+# will be logged with a `widget_type` field, meaning the log comes from the child logger
+```
+
+Once you configure your logger, you will get JSON stream of logs based on the level you defined. This is great for processing, but not for really human-friendly.
+This is where the `bunyan` command-line tool comes in handy, by providing **pretty-printed** logs and **filtering**. More info [here](https://github.com/trentm/node-bunyan#cli-usage).
+
+```bash
+# examples
+
+# this will output the content of the log file in a `short` format
+bunyan sphere-node-connect-debug.log -o short
+00:31:47.760Z  INFO sphere-node-connect: Retrieving access_token...
+00:31:48.232Z  INFO sphere-node-connect: GET /products
+
+# directly pipe the stdout stream
+jasmine-node --verbose --captureExceptions test | ./node_modules/bunyan/bin/bunyan -o short
+00:34:03.936Z DEBUG sphere-node-connect: OAuth constructor initialized. (host=auth.sphere.io, accessTokenUrl=/oauth/token, timeout=20000, rejectUnauthorized=true)
+    config: {
+      "client_id": "S6AD07quPeeTfRoOHXdTx2NZ",
+      "client_secret": "7d3xSWTN5jQJNpnRnMLd4qICmfahGPka",
+      "project_key": "my-project",
+      "oauth_host": "auth.sphere.io",
+      "api_host": "api.sphere.io"
+    }
+00:34:03.933Z DEBUG sphere-node-connect: Failed to retrieve access_token, retrying...1
+
+```
 
 #### Sftp
 _(Coming soon)_

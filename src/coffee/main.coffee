@@ -1,4 +1,5 @@
 # helpers
+exports.Logger = require './helpers/logger'
 exports.Sftp = require './helpers/sftp'
 
 # mixins

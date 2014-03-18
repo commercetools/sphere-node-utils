@@ -1,6 +1,9 @@
-{Sftp, Qbatch, _u} = require '../lib/main'
+{Logger, Sftp, Qbatch, _u} = require '../lib/main'
 
 describe "exports", ->
+
+  it "Logger", ->
+    expect(Logger).toBeDefined()
 
   it "Sftp", ->
     expect(Sftp).toBeDefined()
