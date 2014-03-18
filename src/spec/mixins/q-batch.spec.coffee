@@ -1,7 +1,5 @@
 Q = require 'q'
 _ = require 'underscore'
-{Rest} = require 'sphere-node-connect'
-ApiConfig = require('../../config').config.api
 Qbatch = require '../../lib/mixins/q-batch'
 
 describe 'Mixins', ->
