@@ -53,13 +53,13 @@ describe 'Mixins', ->
   describe 'Qbatch :: paged', ->
 
     beforeEach ->
-      @rest = new Rest config: ApiConfig
+      @rest =
+        GET: (endpoint, callback) ->
+          callback null, {statusCode: 200},
+            total: 1000
+            results: _.map [1..50], (i) -> {id: _.uniqueId("_#{i}"), value: 'foo'}
 
     it 'should fetch products in batches', (done) ->
-      spyOn(@rest, 'GET').andCallFake (endpoint, callback) -> callback null, {statusCode: 200},
-        total: 1000
-        results: _.map [1..50], (i) -> {id: _.uniqueId("_#{i}"), value: 'foo'}
-
       Qbatch.paged(@rest, '/product-projections')
       .then (products) ->
         expect(products.total).toBe 1000
