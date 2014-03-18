@@ -1,6 +1,8 @@
 Q = require 'q'
 _ = require 'underscore'
-_.mixin percentage: (x, tot) -> Math.round(x * 100 / tot)
+_u = require './underscore'
+_.mixin _.extend {}, _u,
+  percentage: (x, tot) -> Math.round(x * 100 / tot)
 
 MAX_PAGED_LIMIT = 50
 
@@ -48,7 +50,7 @@ module.exports =
           percentage: _.percentage(totalPromises - _.size(currentPromises), totalPromises)
           value: results
 
-        allResults = _.union accumulator, results
+        allResults = accumulator.concat results
         if _.size(head) < limit
           # return if there are no more batches
           deferred.resolve allResults
@@ -79,15 +81,6 @@ module.exports =
       offset: 0
     limit = params.limit
 
-    _toQueryString = (offset) ->
-      extended = _.extend {}, params,
-        offset: offset
-      query = _.reduce extended, (memo, value, key) ->
-        memo.push "#{key}=#{value}"
-        memo
-      , []
-      query.join("&")
-
     _buildPagedQueryResponse = (results) ->
       tot = _.size(results)
 
@@ -104,7 +97,7 @@ module.exports =
         # return if there are no more pages
         deferred.resolve _buildPagedQueryResponse(accumulator)
       else
-        queryParams = _toQueryString(offset)
+        queryParams = _.toQueryString _.extend {}, params, offset: offset
         rest.GET "#{endpoint}?#{queryParams}", (error, response, body) ->
           deferred.notify
             percentage: if total then _.percentage(total - (offset + limit), total) else 0
