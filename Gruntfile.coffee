@@ -72,6 +72,8 @@ module.exports = (grunt) ->
         command: 'istanbul cover jasmine-node --captureExceptions test && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage'
       jasmine:
         command: 'jasmine-node --verbose --captureExceptions test'
+      publish:
+        command: 'npm publish'
 
     bump:
       options:
@@ -103,4 +105,4 @@ module.exports = (grunt) ->
   grunt.registerTask 'coverage', ['build', 'shell:coverage']
   grunt.registerTask 'release', 'Release a new version, push it and publish it', (target) ->
     target = 'patch' unless target
-    grunt.task.run "bump-only:#{target}", 'test', 'bump-commit'
+    grunt.task.run "bump-only:#{target}", 'test', 'bump-commit', 'shell:publish'

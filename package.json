@@ -3,7 +3,7 @@
   "description": "Helpers to share among all SPHERE.IO node components.",
   "version": "0.2.0",
   "homepage": "https://github.com/sphereio/sphere-node-utils",
-  "private": true,
+  "private": false,
   "author": {
     "name": "Hajo Eichler",
     "email": "hajo.eichler@commercetools.com",
@@ -27,6 +27,8 @@
     "node": ">= 0.10.0"
   },
   "scripts": {
+    "build": "grunt build",
+    "postpublish": "rm -rf lib",
     "test": "grunt coverage"
   },
   "dependencies": {

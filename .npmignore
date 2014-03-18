@@ -2,9 +2,9 @@ node_modules
 *.log
 src
 test
+config.js
 coverage
 .travis.yml
 .coveralls.yml
-*.coffee
 create_config.sh
-config.js
+*.coffee
