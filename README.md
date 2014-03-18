@@ -167,6 +167,7 @@ _.toQueryString(params)
 
 ##### `_.fromQueryString`
 Returns a key-value JSON object from a query string
+> Note that all values are parsed as string
 
 ```coffeescript
 query = 'where=name%20%3D%20%22Foo%22&staged=true&limit=100&offset=2'
