@@ -13,38 +13,29 @@ This module shares helpers among all [SPHERE.IO](http://sphere.io/) Node.js comp
     * [Logger](#logger)
     * [Sftp](#sftp)
   * [Mixins](#mixins)
-    * [Qbatch.all (batch processing)](#qbatchall-batch-processing)
+    * [Qbatch](#qbatch)
+      * [all (batch processing)](#all-batch-processing)
     * [Underscore](#underscore)
       * [_.deepClone](#_deepclone)
       * [_.percentage](#_percentage)
-      * [_.toQueryString](#_toquerystring)
-      * [_.fromQueryString](#_fromquerystring)
+      * [_.stringifyQuery](#_stringifyquery)
+      * [_.parseQuery](#_parsequery)
 * [Examples](#examples)
 * [Releasing](#releasing)
 * [License](#license)
 
 
 ## Getting Started
-> This module is `**private**` and will not be published to NPM registry at the moment
-
-To install the module simply require it as dependency in the `package.json` using a Git URL and specifying the correct tag as a hash parameter.
-
-```json
-{
-  ...
-  "dependencies": {
-    "sphere-node-utils": "sphereio/sphere-node-utils.git#v0.1.0"
-  },
-  ...
-}
-```
-
-Then require it as a normal dependency
 
 ```coffeescript
 SphereUtils = require 'sphere-node-utils'
+Logger = SphereUtils.Logger
+Sftp = SphereUtils.Sftp
+Qbatch = SphereUtils.Qbatch
+_u = SphereUtils._u
 
-{Sftp} = require 'sphere-node-utils'
+# or
+{Logger, Sftp, Qbatch, _u} = require 'sphere-node-utils'
 ```
 
 ## Documentation
@@ -140,9 +131,15 @@ Currently following mixins are provided by `SphereUtils`:
 
 - `Qbatch`
   - `all`
-  - `paged`
+- `underscore`
+  - `deepClone`
+  - `percentage`
+  - `stringifyQuery`
+  - `parseQuery`
 
-#### Qbatch.all (batch processing)
+#### Qbatch
+
+##### `all` (batch processing)
 Batch processing allows a list of promises to be executed in chunks, by defining a limit to how many requests can be sent in parallel.
 The `Qbatch.all` function is actually a promise itself which recursively resolves all given promises in batches.
 
@@ -159,7 +156,7 @@ Default max number of parallel request is `**50**`, you can configure this in th
 
 ```coffeescript
 # with custom limit (max number of parallel requests)
-Qbatch(allPromises, 100)
+Qbatch.all(allPromises, 100)
 .then (result) ->
 .fail (error) ->
 ```
@@ -167,7 +164,7 @@ Qbatch(allPromises, 100)
 You can also subscribe to **progress notifications** of the promise
 
 ```coffeescript
-Qbatch(allPromises)
+Qbatch.all(allPromises)
 .then (result) ->
 .progress (progress) ->
   # progress is an object containing the current progress percentage
@@ -204,7 +201,7 @@ value = _.percentage(30, 500)
 # => 6
 ```
 
-##### `_.toQueryString`
+##### `_.stringifyQuery`
 Returns a URL query string from a key-value object
 
 ```coffeescript
@@ -213,17 +210,17 @@ params =
   staged: true
   limit: 100
   offset: 2
-_.toQueryString(params)
+_.stringifyQuery(params)
 # => 'where=name%20%3D%20%22Foo%22&staged=true&limit=100&offset=2'
 ```
 
-##### `_.fromQueryString`
+##### `_.parseQuery`
 Returns a key-value JSON object from a query string
 > Note that all values are parsed as string
 
 ```coffeescript
 query = 'where=name%20%3D%20%22Foo%22&staged=true&limit=100&offset=2'
-_.fromQueryString(query)
+_.parseQuery(query)
 # => {where: encodeURIComponent('name = "Foo"'), staged: 'true', limit: '100', offset: '2'}
 ```
 
