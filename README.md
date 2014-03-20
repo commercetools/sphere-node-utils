@@ -127,17 +127,6 @@ jasmine-node --verbose --captureExceptions test | ./node_modules/bunyan/bin/buny
 #### Sftp
 _(Coming soon)_
 
-### Mixins
-Currently following mixins are provided by `SphereUtils`:
-
-- `Qbatch`
-  - `all`
-- `underscore`
-  - `deepClone`
-  - `percentage`
-  - `stringifyQuery`
-  - `parseQuery`
-
 #### ProjectCredentialsConfig
 
 Provides sphere credentials based on the project key.
@@ -150,6 +139,17 @@ Following files are used to store the credentials and would be searched (descend
 * ~/.sphere-project-credentials.json
 * /etc/.sphere-project-credentials
 * /etc/.sphere-project-credentials.json
+
+### Mixins
+Currently following mixins are provided by `SphereUtils`:
+
+- `Qbatch`
+  - `all`
+- `underscore`
+  - `deepClone`
+  - `percentage`
+  - `stringifyQuery`
+  - `parseQuery`
 
 #### Qbatch
 
