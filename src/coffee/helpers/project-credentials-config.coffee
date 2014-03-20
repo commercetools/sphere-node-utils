@@ -6,12 +6,24 @@ _.mixin require('underscore.string')
 
 csv = require 'csv'
 
+###
+ Provides sphere credentials based on the project key.
+
+ Following files are used to store the credentials and would be searched (descending priority):
+
+ ./.sphere-project-credentials
+ ./.sphere-project-credentials.json
+ ~/.sphere-project-credentials
+ ~/.sphere-project-credentials.json
+ /etc/.sphere-project-credentials
+ /etc/.sphere-project-credentials.json
+###
 class ProjectCredentialsConfig
-  @create: (options) ->
+  @create: (options = {}) ->
     (new ProjectCredentialsConfig(options))._init()
 
   # private
-  constructor: (options) ->
+  constructor: (options = {}) ->
     @_baseName = options.baseName or 'sphere-project-credentials'
     @_lookupFiles = options.lookupFiles or [
       "./.#{@_baseName}"

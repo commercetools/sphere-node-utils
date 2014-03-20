@@ -12,6 +12,7 @@ This module shares helpers among all [SPHERE.IO](http://sphere.io/) Node.js comp
   * [Helpers](#helpers)
     * [Logger](#logger)
     * [Sftp](#sftp)
+    * [ProjectCredentialsConfig](#projectcredentialsconfig)
   * [Mixins](#mixins)
     * [Qbatch](#qbatch)
       * [all (batch processing)](#all-batch-processing)
@@ -125,6 +126,31 @@ jasmine-node --verbose --captureExceptions test | ./node_modules/bunyan/bin/buny
 
 #### Sftp
 _(Coming soon)_
+
+### Mixins
+Currently following mixins are provided by `SphereUtils`:
+
+- `Qbatch`
+  - `all`
+- `underscore`
+  - `deepClone`
+  - `percentage`
+  - `stringifyQuery`
+  - `parseQuery`
+
+#### ProjectCredentialsConfig
+
+Provides sphere credentials based on the project key.
+
+Following files are used to store the credentials and would be searched (descending priority):
+
+* ./.sphere-project-credentials
+* ./.sphere-project-credentials.json
+* ~/.sphere-project-credentials
+* ~/.sphere-project-credentials.json
+* /etc/.sphere-project-credentials
+* /etc/.sphere-project-credentials.json
+
 
 ### Mixins
 Currently following mixins are provided by `SphereUtils`:
