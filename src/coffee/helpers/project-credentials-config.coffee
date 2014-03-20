@@ -1,7 +1,8 @@
 Q = require 'q'
 fs = require 'q-io/fs'
 {_} = require 'underscore'
-_s = require 'underscore.string'
+
+_.mixin require('underscore.string')
 
 csv = require 'csv'
 
@@ -36,7 +37,7 @@ class ProjectCredentialsConfig
         if exists
           fs.read path, 'r'
           .then (contents) =>
-            if _s.endsWith(normalizedPath, ".json")
+            if _.endsWith(normalizedPath, ".json")
               @_readJsonConfig "#{contents}"
             else
               @_readCsvConfig "#{contents}"
@@ -83,7 +84,7 @@ class ProjectCredentialsConfig
         throw new Error("Can't find credentials for project '#{credentials.project_key}'.")
 
   _normalizePath: (path) ->
-    if not path? or _s.isBlank(path)
+    if not path? or _.isBlank(path)
       throw new Error("Path is empty!")
 
     path.replace "~", @_getUserHome()
