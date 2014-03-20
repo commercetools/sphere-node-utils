@@ -6,17 +6,17 @@ _.mixin require('underscore.string')
 
 csv = require 'csv'
 
-###
- Provides sphere credentials based on the project key.
-
- Following files are used to store the credentials and would be searched (descending priority):
-
- ./.sphere-project-credentials
- ./.sphere-project-credentials.json
- ~/.sphere-project-credentials
- ~/.sphere-project-credentials.json
- /etc/.sphere-project-credentials
- /etc/.sphere-project-credentials.json
+###*
+ * Provides sphere credentials based on the project key.
+ *
+ * Following files are used to store the credentials and would be searched (descending priority):
+ *
+ * ./.sphere-project-credentials
+ * ./.sphere-project-credentials.json
+ * ~/.sphere-project-credentials
+ * ~/.sphere-project-credentials.json
+ * /etc/.sphere-project-credentials
+ * /etc/.sphere-project-credentials.json
 ###
 class ProjectCredentialsConfig
   @create: (options = {}) ->
@@ -82,10 +82,20 @@ class ProjectCredentialsConfig
 
     d.promise
 
+  ###*
+   * Returns project credentials for the project key.
+   *
+   * @returns Credentials have fiollowing structure: {project_key: 'key', client_id: 'foo', client_secret: 'bar'}
+  ###
   getCredentialsForProjectKey: (key) ->
     @getCredentials
       project_key: key
 
+  ###*
+   * Enriches project credentials if client_id or client_secret are missing.
+   *
+   * @returns Credentials have fiollowing structure: {project_key: 'key', client_id: 'foo', client_secret: 'bar'}
+  ###
   getCredentials: (credentials) ->
     if credentials.client_id? and credentials.client_secret?
       credentials
