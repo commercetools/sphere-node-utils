@@ -151,18 +151,6 @@ Following files are used to store the credentials and would be searched (descend
 * /etc/.sphere-project-credentials
 * /etc/.sphere-project-credentials.json
 
-
-### Mixins
-Currently following mixins are provided by `SphereUtils`:
-
-- `Qbatch`
-  - `all`
-- `underscore`
-  - `deepClone`
-  - `percentage`
-  - `stringifyQuery`
-  - `parseQuery`
-
 #### Qbatch
 
 ##### `all` (batch processing)
