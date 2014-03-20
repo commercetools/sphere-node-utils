@@ -88,8 +88,8 @@ class ProjectCredentialsConfig
    * @param {String} key The project key
    * @returns Credentials have following structure: {project_key: 'key', client_id: 'foo', client_secret: 'bar'}
   ###
-  getCredentialsForProjectKey: (key) ->
-    @getCredentials
+  forProjectKey: (key) ->
+    @enrichCredentials
       project_key: key
 
   ###*
@@ -97,7 +97,7 @@ class ProjectCredentialsConfig
    *
    * @returns Credentials have following structure: {project_key: 'key', client_id: 'foo', client_secret: 'bar'}
   ###
-  getCredentials: (credentials) ->
+  enrichCredentials: (credentials) ->
     if credentials.client_id? and credentials.client_secret?
       credentials
     else

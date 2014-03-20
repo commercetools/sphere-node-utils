@@ -4,36 +4,36 @@ _ = require 'underscore'
 
 describe 'ProjectCredentialsConfig', ->
 
-  it 'should correctly parce configuration files and override credentials correctly', (done) ->
+  it 'should correctly parse configuration files and override credentials correctly', (done) ->
     ProjectCredentialsConfig.create
       lookupFiles: ['data/config/config3', 'data/config/config2.json', 'data/config/does-not-exists', 'data/config/config1']
     .then (config) ->
-      expect(config.getCredentialsForProjectKey('project-a')).toEqual
+      expect(config.forProjectKey('project-a')).toEqual
         project_key: 'project-a'
         client_id: 'clientId1'
         client_secret: 'clientSecret1'
 
-      expect(config.getCredentials({project_key: 'project-b'})).toEqual
+      expect(config.enrichCredentials({project_key: 'project-b'})).toEqual
         project_key: 'project-b'
         client_id: 'clientId3'
         client_secret: 'clientSecret3'
 
-      expect(config.getCredentialsForProjectKey('project-c')).toEqual
+      expect(config.forProjectKey('project-c')).toEqual
         project_key: 'project-c'
         client_id: 'clientId5'
         client_secret: 'clientSecret5'
 
-      expect(config.getCredentialsForProjectKey('project-d')).toEqual
+      expect(config.forProjectKey('project-d')).toEqual
         project_key: 'project-d'
         client_id: 'clientId6'
         client_secret: 'clientSecret6'
 
-      expect(config.getCredentialsForProjectKey('project-z')).toEqual
+      expect(config.forProjectKey('project-z')).toEqual
         project_key: 'project-z'
         client_id: 'clientId100:foooo'
         client_secret: 'clientSecret100'
 
-      expect(config.getCredentials({project_key: 'foo', client_id: "foo1", client_secret: "foo2"})).toEqual
+      expect(config.enrichCredentials({project_key: 'foo', client_id: "foo1", client_secret: "foo2"})).toEqual
         project_key: 'foo'
         client_id: 'foo1'
         client_secret: 'foo2'
