@@ -85,7 +85,8 @@ class ProjectCredentialsConfig
   ###*
    * Returns project credentials for the project key.
    *
-   * @returns Credentials have fiollowing structure: {project_key: 'key', client_id: 'foo', client_secret: 'bar'}
+   * @param {String} key The project key
+   * @returns Credentials have following structure: {project_key: 'key', client_id: 'foo', client_secret: 'bar'}
   ###
   getCredentialsForProjectKey: (key) ->
     @getCredentials
@@ -94,7 +95,7 @@ class ProjectCredentialsConfig
   ###*
    * Enriches project credentials if client_id or client_secret are missing.
    *
-   * @returns Credentials have fiollowing structure: {project_key: 'key', client_id: 'foo', client_secret: 'bar'}
+   * @returns Credentials have following structure: {project_key: 'key', client_id: 'foo', client_secret: 'bar'}
   ###
   getCredentials: (credentials) ->
     if credentials.client_id? and credentials.client_secret?
@@ -107,7 +108,7 @@ class ProjectCredentialsConfig
 
   _normalizePath: (path) ->
     if not path? or _.isBlank(path)
-      throw new Error("Path is empty!")
+      throw new Error('Path is empty!')
 
     path.replace "~", @_getUserHome()
 
