@@ -41,3 +41,16 @@ describe 'ProjectCredentialsConfig', ->
     .fail (error) ->
       done(error)
     .done()
+
+  it "should throw an error if credentials are not defined", (done) ->
+    ProjectCredentialsConfig.create
+      lookupFiles: ['data/config/config3']
+    .then (config) ->
+      try
+        expect(config.forProjectKey('non-existing-project'))
+        done("Error not thrown")
+      catch error
+        done()
+    .fail (error) ->
+      done(error)
+    .done()
