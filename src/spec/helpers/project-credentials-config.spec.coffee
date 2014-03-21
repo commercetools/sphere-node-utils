@@ -46,11 +46,8 @@ describe 'ProjectCredentialsConfig', ->
     ProjectCredentialsConfig.create
       lookupFiles: ['data/config/config3']
     .then (config) ->
-      try
-        expect(config.forProjectKey('non-existing-project'))
-        done("Error not thrown")
-      catch error
-        done()
+      expect(-> config.forProjectKey('non-existing-project')).toThrow new Error "Can't find credentials for project 'non-existing-project'."
+      done()
     .fail (error) ->
       done(error)
     .done()
