@@ -44,10 +44,10 @@ class ProjectCredentialsConfig
     configsP = _.map @_lookupFiles, (path) =>
       normalizedPath = @_normalizePath path
 
-      fs.exists path
+      fs.exists normalizedPath
       .then (exists) =>
         if exists
-          fs.read path, 'r'
+          fs.read normalizedPath, 'r'
           .then (contents) =>
             if _.endsWith(normalizedPath, ".json")
               @_readJsonConfig "#{contents}"
