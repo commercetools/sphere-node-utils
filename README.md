@@ -137,8 +137,8 @@ Following files are used to store the credentials and would be searched (descend
 * ./.sphere-project-credentials.json
 * ~/.sphere-project-credentials
 * ~/.sphere-project-credentials.json
-* /etc/.sphere-project-credentials
-* /etc/.sphere-project-credentials.json
+* /etc/sphere-project-credentials
+* /etc/sphere-project-credentials.json
 
 ### Mixins
 Currently following mixins are provided by `SphereUtils`:

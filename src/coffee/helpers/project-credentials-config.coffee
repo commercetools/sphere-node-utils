@@ -15,8 +15,8 @@ csv = require 'csv'
  * ./.sphere-project-credentials.json
  * ~/.sphere-project-credentials
  * ~/.sphere-project-credentials.json
- * /etc/.sphere-project-credentials
- * /etc/.sphere-project-credentials.json
+ * /etc/sphere-project-credentials
+ * /etc/sphere-project-credentials.json
 ###
 class ProjectCredentialsConfig
   @create: (options = {}) ->
