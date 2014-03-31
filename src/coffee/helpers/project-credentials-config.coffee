@@ -1,8 +1,7 @@
 Q = require 'q'
 fs = require 'q-io/fs'
-{_} = require 'underscore'
-
-_.mixin require('underscore.string')
+_ = require 'underscore'
+_.mixin require('underscore.string').exports()
 
 csv = require 'csv'
 

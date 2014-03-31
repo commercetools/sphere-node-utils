@@ -1,7 +1,14 @@
 _ = require 'underscore'
 _u = require '../../lib/mixins/underscore'
+_.mixin require('underscore.string').exports()
 
 describe 'Mixins', ->
+
+  describe 'underscore.string', ->
+
+    it 'should mix in with underscore without conflicts', ->
+      u = _.union [{key: 'foo'}, {key: 'bar'}, {key: 'qux'}], [], []
+      expect(u).toEqual [{key: 'foo'}, {key: 'bar'}, {key: 'qux'}]
 
   describe '_u', ->
 
