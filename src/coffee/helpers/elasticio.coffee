@@ -9,7 +9,7 @@ exports.ElasticIoHelpers =
       client_id: cfg.sphereClientId,
       client_secret: cfg.sphereClientSecret,
       project_key: cfg.sphereProjectKey,
-      timeout: cf.timeout or 60000
+      timeout: cfg.timeout or 60000
     # TODO: logentries token
 
   returnSuccess: (message, next) ->

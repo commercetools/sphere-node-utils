@@ -19,3 +19,14 @@ describe 'Elasticio', ->
       expect(error).toEqual new Error('oh oh')
       expect(message).toBe 'oh oh'
       done()
+
+  it 'should extract config', ->
+    cfg =
+      foo: 'bar'
+    config = ElasticIoHelpers.getCommonConfig cfg
+    expectedConfig =
+      client_id: undefined
+      client_secret: undefined
+      project_key: undefined
+      timeout: 60000
+    expect(config).toEqual expectedConfig
