@@ -11,6 +11,7 @@ This module shares helpers among all [SPHERE.IO](http://sphere.io/) Node.js comp
 * [Documentation](#documentation)
   * [Helpers](#helpers)
     * [Logger](#logger)
+    * [TaskQueue](#taskqueue)
     * [Sftp](#sftp)
     * [ProjectCredentialsConfig](#projectcredentialsconfig)
   * [Mixins](#mixins)
@@ -124,6 +125,24 @@ jasmine-node --verbose --captureExceptions test | ./node_modules/bunyan/bin/buny
 
 ```
 
+#### TaskQueue
+A `TaskQueue` allows you to queue promises (or function that return promises) which will be executed in parallel sequentially, meaning that new tasks will not be triggered until the previous ones are resolved.
+
+```coffeescript
+{TaskQueue} = require 'sphere-node-utils'
+
+callMe = ->
+  d = Q.defer()
+  setTimeout ->
+    d.resolve true
+  , 5000
+  d.promise
+task = new TaskQueue maxParallel: 50 # default 20
+task.addTask callMe
+.then (result) -> # result == true
+.fail (error) ->
+```
+
 #### Sftp
 _(Coming soon)_
 
@@ -133,10 +152,10 @@ Provides sphere credentials based on the project key.
 
 Following files are used to store the credentials and would be searched (descending priority):
 
-* ./.sphere-project-credentials
-* ./.sphere-project-credentials.json
-* ~/.sphere-project-credentials
-* ~/.sphere-project-credentials.json
+* ./sphere-project-credentials
+* ./sphere-project-credentials.json
+* ~/sphere-project-credentials
+* ~/sphere-project-credentials.json
 * /etc/sphere-project-credentials
 * /etc/sphere-project-credentials.json
 
