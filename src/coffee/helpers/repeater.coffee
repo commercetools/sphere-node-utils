@@ -25,11 +25,8 @@ class Repeater
    *   recoverableError - Error => Boolean - function that decides, whether an error can be recovered by repeating the task execution
   ###
   execute: (options) ->
-    if not options.task?
-      throw new Error("`task` function is undefined")
-
-    if not options.recoverableError?
-      throw new Error("`recoverableError` function is undefined")
+    throw new Error '`task` function is undefined' unless _.isFunction(task)
+    throw new Error '`recoverableError` function is undefined' unless _.isFunction(recoverableError)
 
     d = Q.defer()
 
