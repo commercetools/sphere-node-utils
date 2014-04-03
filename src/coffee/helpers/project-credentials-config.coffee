@@ -10,14 +10,15 @@ csv = require 'csv'
  *
  * Following files are used to store the credentials and would be searched (descending priority):
  *
- * ./.sphere-project-credentials
- * ./.sphere-project-credentials.json
- * ~/.sphere-project-credentials
- * ~/.sphere-project-credentials.json
+ * ./sphere-project-credentials
+ * ./sphere-project-credentials.json
+ * ~/sphere-project-credentials
+ * ~/sphere-project-credentials.json
  * /etc/sphere-project-credentials
  * /etc/sphere-project-credentials.json
 ###
 class ProjectCredentialsConfig
+
   @create: (options = {}) ->
     (new ProjectCredentialsConfig(options))._init()
 
@@ -25,10 +26,10 @@ class ProjectCredentialsConfig
   constructor: (options = {}) ->
     @_baseName = options.baseName or 'sphere-project-credentials'
     @_lookupFiles = options.lookupFiles or [
-      "./.#{@_baseName}"
-      "./.#{@_baseName}.json"
-      "~/.#{@_baseName}"
-      "~/.#{@_baseName}.json"
+      "./#{@_baseName}"
+      "./#{@_baseName}.json"
+      "~/#{@_baseName}"
+      "~/#{@_baseName}.json"
       "/etc/#{@_baseName}"
       "/etc/#{@_baseName}.json"
     ]
@@ -114,4 +115,4 @@ class ProjectCredentialsConfig
   _getUserHome: ->
     process.env.HOME or process.env.HOMEPATH or process.env.USERPROFILE
 
-exports.ProjectCredentialsConfig = ProjectCredentialsConfig
+module.exports = ProjectCredentialsConfig

@@ -1,6 +1,6 @@
 Q = require 'q'
 _ = require 'underscore'
-{ProjectCredentialsConfig} = require '../../lib/helpers/project-credentials-config'
+ProjectCredentialsConfig = require '../../lib/helpers/project-credentials-config'
 
 describe 'ProjectCredentialsConfig', ->
 
