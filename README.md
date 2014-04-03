@@ -14,6 +14,7 @@ This module shares helpers among all [SPHERE.IO](http://sphere.io/) Node.js comp
     * [TaskQueue](#taskqueue)
     * [Sftp](#sftp)
     * [ProjectCredentialsConfig](#projectcredentialsconfig)
+    * [Repeater](#repeater)
   * [Mixins](#mixins)
     * [Qbatch](#qbatch)
       * [all (batch processing)](#all-batch-processing)
@@ -158,6 +159,29 @@ Following files are used to store the credentials and would be searched (descend
 * ~/sphere-project-credentials.json
 * /etc/sphere-project-credentials
 * /etc/sphere-project-credentials.json
+
+#### Repeater
+
+ Repeater is designed to repeat some arbitrary function unless the execution of this function does not throw any errors
+
+ Options:
+
+ * **attempts** - Int - how many times execution of the function should be repeated until repeater will give up (default 10)
+ * **timeout** - Long - the delay between attempts
+ * **timeoutType** - String - The type of the timeout:
+   * `'constant'` - always the same timeout
+   * `'variable'` - timeout grows with the attempts count (it also contains random component)
+
+Example:
+
+    repeater = new Repeater {attempts: 10}
+
+    repeater.execute
+      recoverableError: (e) -> e instanceof ErrorStatusCode and e.code is 409
+      task: ->
+        console.info("get some stuff..")
+        console.info("update some another things...")
+        Q("Done")
 
 ### Mixins
 Currently following mixins are provided by `SphereUtils`:
