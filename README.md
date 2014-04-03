@@ -184,14 +184,16 @@ _(Coming soon)_
 
 Example:
 
-    repeater = new Repeater {attempts: 10}
+```coffeescript
+repeater = new Repeater {attempts: 10}
 
-    repeater.execute
-      recoverableError: (e) -> e instanceof ErrorStatusCode and e.code is 409
-      task: ->
-        console.info("get some stuff..")
-        console.info("update some another things...")
-        Q("Done")
+repeater.execute
+  recoverableError: (e) -> e instanceof ErrorStatusCode and e.code is 409
+  task: ->
+    console.info("get some stuff..")
+    console.info("update some another things...")
+    Q("Done")
+```
 
 ### Mixins
 Currently following mixins are provided by `SphereUtils`:

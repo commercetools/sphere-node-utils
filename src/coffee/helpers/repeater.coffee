@@ -12,7 +12,7 @@ Q = require 'q'
  *     'variable' - timeout grows with the attempts count (it also contains random component)
 ###
 class Repeater
-  constructor: (options) ->
+  constructor: (options = {}) ->
     @_attempts = options.attempts or 10
     @_timeout = options.timeout or 100
     @_timeoutType = options.timeoutType or 'variable'
@@ -21,10 +21,16 @@ class Repeater
    * Executes arbitrary function
    *
    * Options:
-   *   task - () => Promise[Any] - the tast that should be executed
+   *   task - () => Promise[Any] - the task that should be executed
    *   recoverableError - Error => Boolean - function that decides, whether an error can be recovered by repeating the task execution
   ###
   execute: (options) ->
+    if not options.task?
+      throw new Error("`task` function is undefined")
+
+    if not options.recoverableError?
+      throw new Error("`recoverableError` function is undefined")
+
     d = Q.defer()
 
     @_repeat(@_attempts, options, d, null)
