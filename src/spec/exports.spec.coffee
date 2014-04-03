@@ -1,18 +1,17 @@
-{Logger, TaskQueue, Sftp, Qbatch, _u} = require '../lib/main'
+{Logger, TaskQueue, Sftp, ProjectCredentialsConfig, ElasticIo, Qbatch, _u} = require '../lib/main'
 
-describe "exports", ->
+describe 'exports', ->
 
-  it "Logger", ->
-    expect(Logger).toBeDefined()
+  it 'Logger', -> expect(Logger).toBeDefined()
 
-  it "TaskQueue", ->
-    expect(TaskQueue).toBeDefined()
+  it 'TaskQueue', -> expect(TaskQueue).toBeDefined()
 
-  it "Sftp", ->
-    expect(Sftp).toBeDefined()
+  it 'Sftp', -> expect(Sftp).toBeDefined()
 
-  it "Qbatch", ->
-    expect(Qbatch).toBeDefined()
+  it 'ProjectCredentialsConfig', -> expect(ProjectCredentialsConfig).toBeDefined()
 
-  it "_u", ->
-    expect(_u).toBeDefined()
+  it 'ElasticIo', -> expect(ElasticIo).toBeDefined()
+
+  it 'Qbatch', -> expect(Qbatch).toBeDefined()
+
+  it '_u', -> expect(_u).toBeDefined()

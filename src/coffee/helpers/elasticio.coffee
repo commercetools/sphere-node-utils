@@ -1,8 +1,9 @@
-{_} = require 'underscore'
+_ = require 'underscore'
+
 ###*
  * Some helpers to deal with the elastic.io platform
 ###
-exports.ElasticIoHelpers =
+exports.ElasticIo =
 
   getCommonConfig: (cfg) ->
     config =

@@ -32,12 +32,15 @@ This module shares helpers among all [SPHERE.IO](http://sphere.io/) Node.js comp
 ```coffeescript
 SphereUtils = require 'sphere-node-utils'
 Logger = SphereUtils.Logger
+TaskQueue = SphereUtils.TaskQueue
 Sftp = SphereUtils.Sftp
+ProjectCredentialsConfig = SphereUtils.ProjectCredentialsConfig
+ElasticIo = SphereUtils.ElasticIo
 Qbatch = SphereUtils.Qbatch
 _u = SphereUtils._u
 
 # or
-{Logger, Sftp, Qbatch, _u} = require 'sphere-node-utils'
+{Logger, TaskQueue, Sftp, ProjectCredentialsConfig, ElasticIo, Qbatch, _u} = require 'sphere-node-utils'
 ```
 
 ## Documentation
@@ -46,7 +49,10 @@ _u = SphereUtils._u
 Currently following helpers are provided by `SphereUtils`:
 
 - `Logger`
+- `TaskQueue`
 - `Sftp`
+- `ProjectCredentialsConfig`
+- `ElasticIo`
 
 #### Logger
 Logging is supported by the lightweight JSON logging module called [Bunyan](https://github.com/trentm/node-bunyan).
@@ -158,6 +164,9 @@ Following files are used to store the credentials and would be searched (descend
 * ~/sphere-project-credentials.json
 * /etc/sphere-project-credentials
 * /etc/sphere-project-credentials.json
+
+#### ElasticIo
+_(Coming soon)_
 
 ### Mixins
 Currently following mixins are provided by `SphereUtils`:
