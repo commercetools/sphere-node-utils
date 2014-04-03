@@ -5,7 +5,7 @@ _.mixin require('underscore.string').exports()
 {Repeater} = require '../../lib/helpers/repeater'
 
 describe 'Repeater', ->
-  it 'should repeat task until it retuns some successful result', (done) ->
+  it 'should repeat task until it returns some successful result', (done) ->
     repeated = 0
 
     new Repeater
