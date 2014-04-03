@@ -13,8 +13,8 @@ Q = require 'q'
 ###
 class Repeater
   constructor: (options = {}) ->
-    @_attempts = options.attempts or 10
-    @_timeout = options.timeout or 100
+    @_attempts = if options.attempts? then options.attempts else 10
+    @_timeout = if options.timeout? then options.timeout else 100
     @_timeoutType = options.timeoutType or 'variable'
 
   ###*
