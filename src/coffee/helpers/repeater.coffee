@@ -34,10 +34,10 @@ class Repeater
 
     d.promise
 
-  _repeat: (attempts, options, defer, lastError) ->
+  _repeat: (remainingAttempts, options, defer, lastError) ->
     {task, recoverableError} = options
 
-    if attempts is 0
+    if remainingAttempts is 0
       defer.reject new Error("Unsuccessful after #{@_attempts} attempts. Cause: #{lastError.stack}")
     else
       task()
@@ -45,9 +45,9 @@ class Repeater
         defer.resolve res
       .fail (e) =>
         if recoverableError(e)
-          Q.delay @_calculateDelay(attempts)
+          Q.delay @_calculateDelay(remainingAttempts)
           .then (i) =>
-            @_repeat(attempts - 1, options, defer, e)
+            @_repeat(remainingAttempts - 1, options, defer, e)
         else
           defer.reject e
       .done()
