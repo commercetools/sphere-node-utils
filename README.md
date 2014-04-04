@@ -158,10 +158,10 @@ Provides sphere credentials based on the project key.
 
 Following files are used to store the credentials and would be searched (descending priority):
 
-* ./sphere-project-credentials
-* ./sphere-project-credentials.json
-* ~/sphere-project-credentials
-* ~/sphere-project-credentials.json
+* ./.sphere-project-credentials
+* ./.sphere-project-credentials.json
+* ~/.sphere-project-credentials
+* ~/.sphere-project-credentials.json
 * /etc/sphere-project-credentials
 * /etc/sphere-project-credentials.json
 
