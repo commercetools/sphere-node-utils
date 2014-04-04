@@ -1,7 +1,7 @@
 {
   "name": "sphere-node-utils",
   "description": "Helpers to share among all SPHERE.IO node components.",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "homepage": "https://github.com/sphereio/sphere-node-utils",
   "private": false,
   "author": {
