@@ -1,4 +1,4 @@
-{ElasticIo} = require '../../lib/helpers/elasticio'
+ElasticIo = require '../../lib/helpers/elasticio'
 
 describe 'Elasticio', ->
 
