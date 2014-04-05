@@ -22,17 +22,38 @@ module.exports =
     JSON.parse(JSON.stringify(obj))
 
   ###*
+   * Stringifies a JSON object in a pretty format
+   * @param {Object} obj A JSON object
+   * @param {Number} [indentation] The indentation number (default 2)
+   * @return {String} A pretty string
+  ###
+  prettify: (obj, indentation = 2) ->
+    JSON.stringify obj, null, indentation
+
+  ###*
+   * Returns either a pretty string (from JSON object) or the error stack
+   * @param {Object} objOrError Either a JSON object or an Error
+   * @param {Number} [indentation] The indentation number (default 2)
+   * @return {String} A pretty string or the error stack
+  ###
+  prettifyError: (objOrError, indentation = 2) ->
+    if objOrError instanceof Error
+      objOrError.stack
+    else
+      @prettify objOrError, indentation
+
+  ###*
    * Returns the percentage of the given values
    * @param {Number} x The current number out of total
    * @param {Number} tot The total number to calculate the percentage
-   * @retrun {Number} The percentage value, rounded
+   * @return {Number} The percentage value, rounded
   ###
   percentage: (x, tot) -> Math.round(x * 100 / tot)
 
   ###*
    * Returns a URL query string from a key-value object
    * @param {Object} params A JSON object containing key-value query params
-   * @retrun {String} A query string, or empty if params is undefined
+   * @return {String} A query string, or empty if params is undefined
   ###
   stringifyQuery: (params) ->
     return "" unless params
@@ -45,7 +66,7 @@ module.exports =
   ###*
    * Returns a key-value JSON object from a query string
    * @param {String} query A query string
-   * @retrun {Object} A JSON object (note that all values are parsed as string)
+   * @return {Object} A JSON object (note that all values are parsed as string)
   ###
   parseQuery: (query) ->
     return {} unless query
