@@ -15,6 +15,8 @@ describe 'Mixins', ->
     it 'should extend underscore', ->
       _.mixin _u
       expect(_.deepClone).toBeDefined()
+      expect(_.prettify).toBeDefined()
+      expect(_.prettifyError).toBeDefined()
       expect(_.percentage).toBeDefined()
       expect(_.stringifyQuery).toBeDefined()
       expect(_.parseQuery).toBeDefined()
@@ -55,6 +57,23 @@ describe 'Mixins', ->
                     {three: "Three"}
                   ]
       expect(_u.deepClone(obj)).toEqual expectedObj
+
+  describe '_u :: prettify', ->
+
+    it 'should prettify JSON', ->
+      expect(_u.prettify {foo: 'bar'}).toBe '{\n  "foo": "bar"\n}'
+
+    it 'should prettify JSON with custom indentation', ->
+      expect(_u.prettify {foo: 'bar'}, 4).toBe '{\n    "foo": "bar"\n}'
+
+  describe '_u :: prettifyError', ->
+
+    it 'should return stack trace', ->
+      e = new Error 'foo'
+      expect(_u.prettifyError e).toEqual e.stack
+
+    it 'should return pretty JSON', ->
+      expect(_u.prettifyError {foo: 'bar'}).toBe '{\n  "foo": "bar"\n}'
 
   describe '_u :: percentage', ->
 

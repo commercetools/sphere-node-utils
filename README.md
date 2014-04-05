@@ -15,11 +15,12 @@ This module shares helpers among all [SPHERE.IO](http://sphere.io/) Node.js comp
     * [Sftp](#sftp)
     * [ProjectCredentialsConfig](#projectcredentialsconfig)
     * [Repeater](#repeater)
+    * [ElasticIo](#elasticio)
   * [Mixins](#mixins)
-    * [Qbatch](#qbatch)
-      * [all (batch processing)](#all-batch-processing)
     * [Underscore](#underscore)
       * [_.deepClone](#_deepclone)
+      * [_.prettify](#_prettify)
+      * [_.prettifyError](#_prettifyerror)
       * [_.percentage](#_percentage)
       * [_.stringifyQuery](#_stringifyquery)
       * [_.parseQuery](#_parsequery)
@@ -151,6 +152,10 @@ task.addTask callMe
 .fail (error) ->
 ```
 
+Available methods:
+- `setMaxParallel` sets the `maxParallel` parameter (default is `20`). **If < 1 or > 100 it throws an error**
+- `addTask` adds a task (promise) to the queue and returns a new promise
+
 #### Sftp
 _(Coming soon)_
 
@@ -160,10 +165,10 @@ Provides sphere credentials based on the project key.
 
 Following files are used to store the credentials and would be searched (descending priority):
 
-* ./sphere-project-credentials
-* ./sphere-project-credentials.json
-* ~/sphere-project-credentials
-* ~/sphere-project-credentials.json
+* ./.sphere-project-credentials
+* ./.sphere-project-credentials.json
+* ~/.sphere-project-credentials
+* ~/.sphere-project-credentials.json
 * /etc/sphere-project-credentials
 * /etc/sphere-project-credentials.json
 
@@ -202,45 +207,12 @@ Currently following mixins are provided by `SphereUtils`:
   - `all`
 - `underscore`
   - `deepClone`
+  - `prettify`
+  - `prettifyError`
   - `percentage`
   - `stringifyQuery`
   - `parseQuery`
 
-#### Qbatch
-
-##### `all` (batch processing)
-Batch processing allows a list of promises to be executed in chunks, by defining a limit to how many requests can be sent in parallel.
-The `Qbatch.all` function is actually a promise itself which recursively resolves all given promises in batches.
-
-```coffeescript
-# let's assume we have a bunch of promises (e.g.: 200)
-allPromises = [p1, p2, p3, ...]
-
-Qbatch.all(allPromises)
-.then (result) ->
-.fail (error) ->
-```
-
-Default max number of parallel request is `**50**`, you can configure this in the second argument.
-
-```coffeescript
-# with custom limit (max number of parallel requests)
-Qbatch.all(allPromises, 100)
-.then (result) ->
-.fail (error) ->
-```
-
-You can also subscribe to **progress notifications** of the promise
-
-```coffeescript
-Qbatch.all(allPromises)
-.then (result) ->
-.progress (progress) ->
-  # progress is an object containing the current progress percentage
-  # and the value of the current results (array)
-  # {percentage: 20, value: [r1, r2, r3, ...]}
-.fail (error) ->
-```
 
 #### Underscore
 A collection of methods to be used as `underscore` mixins. To install
@@ -260,6 +232,39 @@ Returns a deep clone of the given object
 ```coffeescript
 obj = {...} # some object with nested values
 cloned = _.deepClone(obj)
+```
+
+##### `_.prettify`
+Returns a prettify JSON object
+
+```coffeescript
+obj = foo: 'bar'
+pretty = _.prettify(obj)
+# =>
+# "{
+#   "foo": "bar"
+# }"
+```
+
+##### `_.prettifyError`
+Returns either a prettify JSON object or the Error stack
+
+```coffeescript
+e = new Error 'foo'
+prettyOrStack = _.prettifyError(e)
+# => stack
+# "Error: foo
+#   at <anonymous>:2:9
+#   at Object.InjectedScript._evaluateOn (<anonymous>:613:39)
+#   at Object.InjectedScript._evaluateAndWrap (<anonymous>:573:52)
+#   at Object.InjectedScript.evaluate (<anonymous>:492:21)"
+
+obj = foo: 'bar'
+pretty = _.prettifyError(obj)
+# => pretty JSON
+# "{
+#   "foo": "bar"
+# }"
 ```
 
 ##### `_.percentage`
