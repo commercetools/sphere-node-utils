@@ -149,6 +149,10 @@ task.addTask callMe
 .fail (error) ->
 ```
 
+Available methods:
+- `setMaxParallel` sets the `maxParallel` parameter (default is `20`). **If < 1 or > 100 it throws an error**
+- `addTask` adds a task (promise) to the queue and returns a new promise
+
 #### Sftp
 _(Coming soon)_
 

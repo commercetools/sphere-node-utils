@@ -13,10 +13,19 @@ class TaskQueue
    * @param {Object} [opts] A JSON object containg configuration options
   ###
   constructor: (opts = {}) ->
-    @_options = _.defaults opts,
-      maxParallel: 20
+    {maxParallel} = opts
+    @setMaxParallel(maxParallel)
     @_queue = []
     @_activeCount = 0
+
+  ###*
+   * Set the maxParallel parameter with a custom number.
+   * @param {Number} maxParallel A number between 1 and 100 (default 20)
+   * @throws {Error} If number < 1 or > 100
+  ###
+  setMaxParallel: (maxParallel = 20) ->
+    throw new Error 'MaxParallel must be a number between 1 and 100' if _.isNumber(maxParallel) and (maxParallel < 1 or maxParallel > 100)
+    @_maxParallel = maxParallel
 
   ###*
    * Add a new Task to the queue
@@ -30,10 +39,11 @@ class TaskQueue
     d.promise
 
   ###*
+   * @private
    * Start a task by resolving its {Promise}
    * @param {Object} task A Task object containing a function and a deferred
   ###
-  startTask: (task) ->
+  _startTask: (task) ->
     @_activeCount += 1
 
     task.fn()
@@ -51,8 +61,8 @@ class TaskQueue
    * Will recursively check if a new task should be triggered
   ###
   _maybeExecute: ->
-    if @_activeCount < @_options.maxParallel and @_queue.length > 0
-      @startTask @_queue.shift()
+    if @_activeCount < @_maxParallel and @_queue.length > 0
+      @_startTask @_queue.shift()
       @_maybeExecute()
 
 module.exports = TaskQueue
