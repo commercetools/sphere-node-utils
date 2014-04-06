@@ -19,7 +19,6 @@ This module shares helpers among all [SPHERE.IO](http://sphere.io/) Node.js comp
     * [Underscore](#underscore)
       * [_.deepClone](#_deepclone)
       * [_.prettify](#_prettify)
-      * [_.prettifyError](#_prettifyerror)
       * [_.percentage](#_percentage)
       * [_.stringifyQuery](#_stringifyquery)
       * [_.parseQuery](#_parsequery)
@@ -208,7 +207,7 @@ cloned = _.deepClone(obj)
 ```
 
 ##### `_.prettify`
-Returns a prettify JSON object
+Returns a pretty-print formatted JSON string.
 
 ```coffeescript
 obj = foo: 'bar'
@@ -218,9 +217,8 @@ pretty = _.prettify(obj)
 #   "foo": "bar"
 # }"
 ```
-
-##### `_.prettifyError`
-Returns either a prettify JSON object or the Error stack
+In case the object is an instance of `Error`, the error stack is returned
+untouched.
 
 ```coffeescript
 e = new Error 'foo'
@@ -231,13 +229,6 @@ prettyOrStack = _.prettifyError(e)
 #   at Object.InjectedScript._evaluateOn (<anonymous>:613:39)
 #   at Object.InjectedScript._evaluateAndWrap (<anonymous>:573:52)
 #   at Object.InjectedScript.evaluate (<anonymous>:492:21)"
-
-obj = foo: 'bar'
-pretty = _.prettifyError(obj)
-# => pretty JSON
-# "{
-#   "foo": "bar"
-# }"
 ```
 
 ##### `_.percentage`
