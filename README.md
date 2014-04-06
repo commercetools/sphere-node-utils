@@ -36,11 +36,10 @@ TaskQueue = SphereUtils.TaskQueue
 Sftp = SphereUtils.Sftp
 ProjectCredentialsConfig = SphereUtils.ProjectCredentialsConfig
 ElasticIo = SphereUtils.ElasticIo
-Qbatch = SphereUtils.Qbatch
 _u = SphereUtils._u
 
 # or
-{Logger, TaskQueue, Sftp, ProjectCredentialsConfig, ElasticIo, Qbatch, _u} = require 'sphere-node-utils'
+{Logger, TaskQueue, Sftp, ProjectCredentialsConfig, ElasticIo, _u} = require 'sphere-node-utils'
 ```
 
 ## Documentation
@@ -175,12 +174,9 @@ _(Coming soon)_
 ### Mixins
 Currently following mixins are provided by `SphereUtils`:
 
-- `Qbatch`
-  - `all`
 - `underscore`
   - `deepClone`
   - `prettify`
-  - `prettifyError`
   - `percentage`
   - `stringifyQuery`
   - `parseQuery`
@@ -211,7 +207,7 @@ Returns a pretty-print formatted JSON string.
 
 ```coffeescript
 obj = foo: 'bar'
-pretty = _.prettify(obj)
+pretty = _.prettify(obj) # you can pass the indentation value as optional 2nd argument (default 2)
 # =>
 # "{
 #   "foo": "bar"
