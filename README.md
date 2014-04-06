@@ -229,6 +229,8 @@ prettyOrStack = _.prettifyError(e)
 #   at Object.InjectedScript.evaluate (<anonymous>:492:21)"
 ```
 
+> If the argument is not an Object nor an Error, the argument itself is returned
+
 ##### `_.percentage`
 Returns the percentage of the given values
 

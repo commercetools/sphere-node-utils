@@ -69,6 +69,13 @@ describe 'Mixins', ->
       e = new Error 'foo'
       expect(_u.prettify e).toEqual e.stack
 
+    it 'should return if no argument is given', ->
+      expect(_u.prettify()).not.toBeDefined()
+
+    it 'should return argument itself if not an object nor an error', ->
+      expect(_u.prettify 'foo').toBe 'foo'
+      expect(_u.prettify 10).toBe 10
+
   describe '_u :: percentage', ->
 
     it 'should calculate value', ->
