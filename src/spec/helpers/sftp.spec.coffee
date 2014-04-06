@@ -48,6 +48,7 @@ describe 'SftpHelpers', ->
       done()
     .fail (result) ->
       done(result)
+  , 10000 # 10sec
 
   it 'should list files', (done) ->
     @sftp
@@ -62,6 +63,7 @@ describe 'SftpHelpers', ->
     .fail (result) =>
       @helpers.close @sftp
       done(result)
+  , 10000 # 10sec
 
   describe 'getFile()', ->
 
@@ -94,6 +96,7 @@ describe 'SftpHelpers', ->
       .fail (result) =>
         @helpers.close @sftp
         done(result)
+    , 10000 # 10sec
 
     it 'should handle error properly', (done) ->
 
@@ -108,6 +111,7 @@ describe 'SftpHelpers', ->
       .fail (result) =>
         @helpers.close @sftp
         done()
+    , 10000 # 10sec
 
   describe 'moveFile()', ->
 
@@ -146,6 +150,7 @@ describe 'SftpHelpers', ->
       .fail (result) =>
         @helpers.close @sftp
         done(result)
+    , 10000 # 10sec
 
     it 'should handle error properly', (done) ->
 
@@ -160,6 +165,7 @@ describe 'SftpHelpers', ->
       .fail (result) =>
         @helpers.close @sftp
         done()
+    , 10000 # 10sec
 
   ##################
   # helper methods #
