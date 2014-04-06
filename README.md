@@ -215,21 +215,8 @@ pretty = _.prettify(obj) # you can pass the indentation value as optional 2nd ar
 #   "foo": "bar"
 # }"
 ```
-In case the object is an instance of `Error`, the error stack is returned
-untouched.
 
-```coffeescript
-e = new Error 'foo'
-prettyOrStack = _.prettifyError(e)
-# => stack
-# "Error: foo
-#   at <anonymous>:2:9
-#   at Object.InjectedScript._evaluateOn (<anonymous>:613:39)
-#   at Object.InjectedScript._evaluateAndWrap (<anonymous>:573:52)
-#   at Object.InjectedScript.evaluate (<anonymous>:492:21)"
-```
-
-> If the argument is not an Object nor an Error, the argument itself is returned
+> If the argument is not a JSON object, the argument itself is returned (also for `Error` instances)
 
 ##### `_.percentage`
 Returns the percentage of the given values

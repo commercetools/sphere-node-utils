@@ -65,9 +65,9 @@ describe 'Mixins', ->
     it 'should prettify JSON with custom indentation', ->
       expect(_u.prettify {foo: 'bar'}, 4).toBe '{\n    "foo": "bar"\n}'
 
-    it 'should return stack trace', ->
+    it 'should return error instance', ->
       e = new Error 'foo'
-      expect(_u.prettify e).toEqual e.stack
+      expect(_u.prettify e).toEqual e
 
     it 'should return if no argument is given', ->
       expect(_u.prettify()).not.toBeDefined()

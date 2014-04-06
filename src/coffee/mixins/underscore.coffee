@@ -23,8 +23,7 @@ module.exports =
 
   ###*
    * Stringifies a JSON object in a pretty format.
-   * In case of an error object, the error stack is returned untouched.
-   * In case of none of the above, the argument itself is returned.
+   * In case of a non JSON object, the argument itself is returned (also for Error instances).
    * @param {Object} obj A JSON object
    * @param {Number} [indentation] The indentation number (default 2)
    * @return {String} A pretty string
@@ -32,7 +31,7 @@ module.exports =
   prettify: (obj, indentation = 2) ->
     return unless obj
     switch
-      when obj instanceof Error then obj.stack
+      when obj instanceof Error then obj
       when _.isObject(obj) then JSON.stringify obj, null, indentation
       else obj
 
