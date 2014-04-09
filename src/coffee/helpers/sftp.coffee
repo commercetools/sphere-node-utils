@@ -72,6 +72,23 @@ class Sftp
     deferred.promise
 
   ###*
+   * Upload a file.
+   * @param {Object} sftp SFTP handle
+   * @param {String} localPath Download file to this path
+   * @param {String} remotePath Path of the remote file
+   * @return {Promise} A promise, fulfilled with an {Object} or rejected with an error
+  ###
+  putFile: (sftp, localPath, remotePath) ->
+    deferred = Q.defer()
+
+    sftp.fastPut localPath, remotePath, (err) ->
+      if err
+        deferred.reject err
+      else
+        deferred.resolve()
+    deferred.promise
+
+  ###*
    * Move/rename a remote resource.
    * @param {Object} sftp SFTP handle
    * @param {String} srcPath Source path of the remote resource
@@ -82,6 +99,22 @@ class Sftp
     deferred = Q.defer()
 
     sftp.rename srcPath, destPath, (err) ->
+      if err
+        deferred.reject err
+      else
+        deferred.resolve()
+    deferred.promise
+
+  ###*
+   * Remove remote file
+   * @param {Object} sftp SFTP handle
+   * @param {String} path Path to the remote file
+   * @return {Promise} A promise, fulfilled with an {Array} or rejected with an error
+  ###
+  removeFile: (sftp, path) ->
+    deferred = Q.defer()
+
+    sftp.unlink path, (err) ->
       if err
         deferred.reject err
       else

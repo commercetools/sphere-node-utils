@@ -162,7 +162,9 @@ Provides promised based wrapped functionalities for some `SFTP` methods
 - `readFile` _not implemented yet_
 - `saveFile` _not implemented yet_
 - `getFile` TBD
+- `putFile` TBD
 - `moveFile` TBD
+- `removeFile` TBD
 - `openSftp` TBD
 - `close` TBD
 
