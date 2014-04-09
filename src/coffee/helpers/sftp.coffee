@@ -171,18 +171,20 @@ class Sftp
    * @param {Object} sftp SFTP handle
    * @param {String} tmpFolder Local tmp folder path where to save the files to
    * @param {String} remoteFolder Remote path folder where to download the files from
+   * @param {String} [fileRegex] A RegExp to be applied when filtering files
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with an error
   ###
-  downloadAllFiles: (sftp, tmpFolder, remoteFolder) ->
+  downloadAllFiles: (sftp, tmpFolder, remoteFolder, fileRegex = '') ->
     deferred = Q.defer()
 
     @listFiles(sftp, remoteFolder)
     .then (files) =>
       @logger.debug files, 'List of files'
+      regex = new RegExp(fileRegex)
       filteredFiles = _.filter files, (f) ->
         switch f.filename
           when '.', '..' then false
-          else true
+          else regex.test(f.filename)
       Q.all _.map filteredFiles, (f) => @stats(sftp, "#{remoteFolder}/#{f.filename}")
       .then (stats) =>
         filesOnly = []
