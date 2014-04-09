@@ -31,6 +31,22 @@ class Sftp
 
     deferred.promise
 
+  ###*
+   * {@link https://github.com/mscdex/ssh2#stats}
+   * Get directory statistics (useful to check if file is directory or file)
+   * @param {Object} sftp SFTP handle
+   * @param {String} path Path to the file where to get the stats from
+   * @return {Promise} A promise, fulfilled with an {Array} or rejected with an error
+  ###
+  stats: (sftp, path) ->
+    d = Q.defer()
+    sftp.stat path, (err, stats) ->
+      if err
+        d.reject err
+      else
+        d.resolve stats
+    d.promise
+
   readFile: (fileName) ->
     # TODO
 
