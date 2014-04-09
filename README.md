@@ -155,10 +155,19 @@ Available methods:
 - `addTask` adds a task (promise) to the queue and returns a new promise
 
 #### Sftp
-_(Coming soon)_
+Provides promised based wrapped functionalities for some `SFTP` methods
+
+- `listFiles` TBD
+- `stats` TBD
+- `readFile` _not implemented yet_
+- `saveFile` _not implemented yet_
+- `getFile` TBD
+- `moveFile` TBD
+- `openSftp` TBD
+- `close` TBD
+
 
 #### ProjectCredentialsConfig
-
 Provides sphere credentials based on the project key.
 
 Following files are used to store the credentials and would be searched (descending priority):

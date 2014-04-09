@@ -5,6 +5,7 @@ Connection = require 'ssh2'
 class Sftp
 
   constructor: (@_options = {}) ->
+    {@logger} = @_options
 
   ###*
    * Get directory entries.
@@ -97,26 +98,29 @@ class Sftp
     @conn = new Connection()
     # TODO: use Logger ?
     @conn.on 'ready', =>
-      console.log 'Connection :: ready'
-      @conn.sftp (err, sftp) ->
+      @logger?.debug 'Connection :: ready'
+      @conn.sftp (err, sftp) =>
         if err
           deferred.reject err
         else
-          sftp.on 'end', ->
-            console.log 'SFTP :: end'
+          sftp.on 'end', =>
+            @logger?.debug 'SFTP :: end'
           deferred.resolve sftp
 
-    @conn.on 'error', (err) ->
-      console.log 'Connection :: error - msg: ' + err
-    @conn.on 'close', (hadError) ->
-      console.log 'Connection :: close - had error: ' + hadError
-    @conn.on 'end', ->
-      console.log 'Connection :: end'
+    @conn.on 'error', (err) =>
+      @logger?.debug err, 'Connection :: error'
+    @conn.on 'close', (hadError) =>
+      @logger?.debug "Connection :: close - had error: #{hadError}"
+    @conn.on 'end', =>
+      @logger?.debug 'Connection :: end'
 
-    @conn.connect
+    connectOpts =
       host: @_options.host
       username: @_options.username
       password: @_options.password
+    if @_options.debug
+      connectOpts['debug'] = (msg) => @logger?.debug msg
+    @conn.connect connectOpts
 
     deferred.promise
 

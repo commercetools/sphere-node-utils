@@ -46,8 +46,9 @@ describe 'SftpHelpers', ->
       expect(sftp).toBeDefined()
       @helpers.close sftp
       done()
-    .fail (result) ->
-      done(result)
+    .fail (error) -> done(error)
+    .fin => @helpers.close @sftp
+    .done()
   , 10000 # 10sec
 
   it 'should list files', (done) ->
@@ -60,9 +61,9 @@ describe 'SftpHelpers', ->
       expect(_.size files).toBeGreaterThan 0
       @helpers.close @sftp
       done()
-    .fail (result) =>
-      @helpers.close @sftp
-      done(result)
+    .fail (error) -> done(error)
+    .fin => @helpers.close @sftp
+    .done()
   , 10000 # 10sec
 
   describe 'getFile()', ->
@@ -79,8 +80,8 @@ describe 'SftpHelpers', ->
       .then =>
         removeRemoteFile(@_sftp, FILE_REMOTE)
         done()
-      .fail (result) ->
-        done(result)
+      .fail (error) -> done(error)
+      .done()
 
     it 'should download file from remote server', (done) ->
 
@@ -93,9 +94,9 @@ describe 'SftpHelpers', ->
         expect(fs.existsSync(TEST_FILE)).toBe true
         @helpers.close @sftp
         done()
-      .fail (result) =>
-        @helpers.close @sftp
-        done(result)
+      .fail (error) -> done(error)
+      .fin => @helpers.close @sftp
+      .done()
     , 10000 # 10sec
 
     it 'should handle error properly', (done) ->
@@ -108,9 +109,9 @@ describe 'SftpHelpers', ->
       .then =>
         @helpers.close @sftp
         done('should call fail() method.')
-      .fail (result) =>
-        @helpers.close @sftp
-        done()
+      .fail (error) -> done(error)
+      .fin => @helpers.close @sftp
+      .done()
     , 10000 # 10sec
 
   describe 'moveFile()', ->
@@ -129,10 +130,9 @@ describe 'SftpHelpers', ->
       removeRemoteFile(@_sftp, FILE_REMOTE_RENAMED)
       .then =>
         removeRemoteFile(@_sftp, FILE_REMOTE)
-      .then ->
-        done()
-      .fail (result) ->
-        done(result)
+      .then -> done()
+      .fail (error) -> done(error)
+      .done()
 
     it 'should move a file on remote server', (done) ->
 
@@ -147,9 +147,9 @@ describe 'SftpHelpers', ->
         expect(exists).toBe true
         @helpers.close @sftp
         done()
-      .fail (result) =>
-        @helpers.close @sftp
-        done(result)
+      .fail (error) -> done(error)
+      .fin => @helpers.close @sftp
+      .done()
     , 10000 # 10sec
 
     it 'should handle error properly', (done) ->
@@ -162,9 +162,9 @@ describe 'SftpHelpers', ->
       .then =>
         @helpers.close @sftp
         done('should call fail() method.')
-      .fail (result) =>
-        @helpers.close @sftp
-        done()
+      .fail (error) -> done(error)
+      .fin => @helpers.close @sftp
+      .done()
     , 10000 # 10sec
 
   ##################
