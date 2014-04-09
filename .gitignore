@@ -6,4 +6,4 @@ test
 .coveralls.yml
 coverage
 config.js
-test.txt
+tmp-test

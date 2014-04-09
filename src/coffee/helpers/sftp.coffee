@@ -166,5 +166,33 @@ class Sftp
     sftp.end() if sftp
     @conn.end()
 
+  ###*
+   * Download all files from a given remote folder (exclude '.', '..' and directories)
+   * @param {Object} sftp SFTP handle
+   * @param {String} tmpFolder Local tmp folder path where to save the files to
+   * @param {String} remoteFolder Remote path folder where to download the files from
+   * @return {Promise} A promise, fulfilled with an {Object} or rejected with an error
+  ###
+  downloadAllFiles: (sftp, tmpFolder, remoteFolder) ->
+    deferred = Q.defer()
+
+    @listFiles(sftp, remoteFolder)
+    .then (files) =>
+      @logger.debug files, 'List of files'
+      filteredFiles = _.filter files, (f) ->
+        switch f.filename
+          when '.', '..' then false
+          else true
+      Q.all _.map filteredFiles, (f) => @stats(sftp, "#{remoteFolder}/#{f.filename}")
+      .then (stats) =>
+        filesOnly = []
+        _.each filteredFiles, (f, i) -> filesOnly.push(f) if stats[i].isFile() # here magic happens!
+        @logger.debug filesOnly, "About to download"
+        Q.all _.map filesOnly, (f) =>
+          @getFile(sftp, "#{remoteFolder}/#{f.filename}", "#{tmpFolder}/#{f.filename}")
+      .then -> deferred.resolve()
+    .fail (error) -> deferred.reject error
+
+    deferred.promise
 
 module.exports = Sftp

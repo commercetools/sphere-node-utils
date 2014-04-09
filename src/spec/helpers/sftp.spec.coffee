@@ -11,11 +11,12 @@ describe 'SftpHelpers', ->
   TEST_FILE = 'test.txt'
   ROOT_REMOTE = '/upload'
   ROOT_LOCAL = "#{__dirname}/../.."
+  FOLDER_LOCAL = "#{ROOT_LOCAL}/tmp-test"
   FOLDER_REMOTE = "#{ROOT_REMOTE}/data"
   FILE_REMOTE = "#{FOLDER_REMOTE}/#{TEST_FILE}"
   FILE_REMOTE_RENAMED = "#{FOLDER_REMOTE}/renamed-#{TEST_FILE}"
   FILE_LOCAL = "#{ROOT_LOCAL}/data/#{TEST_FILE}"
-  FILE_LOCAL_DOWNLOAD = "#{ROOT_LOCAL}/#{TEST_FILE}"
+  FILE_LOCAL_DOWNLOAD = "#{FOLDER_LOCAL}/#{TEST_FILE}"
 
   beforeEach (done) ->
     @logger = new Logger
@@ -120,4 +121,17 @@ describe 'SftpHelpers', ->
     .fail (error) ->
       expect(error).toBeDefined()
       done()
+    .done()
+
+  it 'should download all files from remote server', (done) ->
+    fileRemoteA = "#{FOLDER_REMOTE}/testA.txt"
+    fileRemoteB = "#{FOLDER_REMOTE}/testB.txt"
+    @helpers.putFile @_sftp, FILE_LOCAL, fileRemoteA
+    .then => @helpers.putFile @_sftp, FILE_LOCAL, fileRemoteB
+    .then => @helpers.downloadAllFiles @_sftp, FOLDER_LOCAL, FOLDER_REMOTE
+    .then ->
+      expect(fs.existsSync("#{FOLDER_LOCAL}/testA.txt")).toBe true
+      expect(fs.existsSync("#{FOLDER_LOCAL}/testB.txt")).toBe true
+      done()
+    .fail (error) -> done(error)
     .done()

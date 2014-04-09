@@ -167,6 +167,7 @@ Provides promised based wrapped functionalities for some `SFTP` methods
 - `removeFile` TBD
 - `openSftp` TBD
 - `close` TBD
+- `downloadAllFiles` TBD
 
 
 #### ProjectCredentialsConfig
