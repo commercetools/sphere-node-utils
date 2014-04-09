@@ -102,6 +102,7 @@ describe 'SftpHelpers', ->
       expect(error).toBeDefined()
       done()
     .done()
+  , 30000 # 30sec
 
   it 'should move a file on remote server', (done) ->
     fileRemote2 = "#{FOLDER_REMOTE}/test2.txt"
@@ -122,6 +123,7 @@ describe 'SftpHelpers', ->
       expect(error).toBeDefined()
       done()
     .done()
+  , 30000 # 30sec
 
   it 'should download all files from remote server', (done) ->
     fileRemoteA = "#{FOLDER_REMOTE}/testA.txt"
