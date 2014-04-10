@@ -18,6 +18,7 @@ This module shares helpers among all [SPHERE.IO](http://sphere.io/) Node.js comp
     * [ProjectCredentialsConfig](#projectcredentialsconfig)
     * [ElasticIo](#elasticio)
   * [Mixins](#mixins)
+    * [Qutils](#qutils)
     * [Underscore](#underscore)
       * [_.deepClone](#_deepclone)
       * [_.prettify](#_prettify)
@@ -192,6 +193,8 @@ _(Coming soon)_
 ### Mixins
 Currently following mixins are provided by `SphereUtils`:
 
+- `Qutils`
+  - `processList`
 - `underscore`
   - `deepClone`
   - `prettify`
@@ -199,6 +202,25 @@ Currently following mixins are provided by `SphereUtils`:
   - `stringifyQuery`
   - `parseQuery`
 
+#### Qutils
+A collections of Q utils (promise-based)
+
+```coffeescript
+{Qutils} = require 'sphere-node-utils'
+```
+
+##### `processList`
+Process each element in the given list using the function `fn` (called on each iteration).
+The function `fn` has to return a promise that should be resolved when all elements of the page are processed.
+
+```coffeescript
+list = [{key: '1'}, {key: '2'}, {key: '3'}]
+processList list, (elem) ->
+  doSomethingWith(elem) # it's a promise
+  .then ->
+    # something else
+    anotherPromise()
+```
 
 #### Underscore
 A collection of methods to be used as `underscore` mixins. To install
