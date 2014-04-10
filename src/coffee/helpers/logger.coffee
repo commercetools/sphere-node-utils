@@ -93,12 +93,12 @@ module.exports = class
         streams: streams
 
     if silent
-      logger.trace = -> console.trace.apply(this, Array::slice.call(arguments))
-      logger.debug = -> console.debug.apply(this, Array::slice.call(arguments))
+      logger.trace = -> console.log.apply(this, Array::slice.call(arguments))
+      logger.debug = -> console.log.apply(this, Array::slice.call(arguments))
       logger.info = -> console.info.apply(this, Array::slice.call(arguments))
       logger.warn = -> console.warn.apply(this, Array::slice.call(arguments))
       logger.error = -> console.error.apply(this, Array::slice.call(arguments))
-      logger.fatal = -> console.fatal.apply(this, Array::slice.call(arguments))
+      logger.fatal = -> console.error.apply(this, Array::slice.call(arguments))
 
     return logger
 
