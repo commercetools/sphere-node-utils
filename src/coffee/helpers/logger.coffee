@@ -53,6 +53,7 @@ module.exports = class
    *   (https://github.com/trentm/node-bunyan#serializers)
    * - src: includes a log of the call source location (file, line, function). Determining the source call
    *   is slow, therefor it's recommended not to enable this on production.
+   * - silent: don't instantiate the {Bunyan} logger, instead use `console`
    * - streams: a list of streams that defines the type of output for log messages
    *   (default:
    *     'stream': 'info' -> stdout
@@ -66,7 +67,7 @@ module.exports = class
   ###
   constructor: (config = {}) ->
 
-    {levelStream, levelFile, path, logger, name, serializers, src} = _.defaults config,
+    {levelStream, levelFile, path, logger, name, serializers, src, silent} = _.defaults config,
       levelStream: @constructor.levelStream
       levelFile: @constructor.levelFile
       path: @constructor.path
@@ -75,6 +76,7 @@ module.exports = class
         request: @reqSerializer
         response: @resSerializer
       src: false # never use this option on production
+      silent: false # turn off logger, use instead `console`
     {streams} = _.defaults config,
       streams: [
         {level: levelStream, stream: process.stdout}
@@ -90,7 +92,16 @@ module.exports = class
         serializers: serializers
         streams: streams
 
+    if silent
+      logger.trace = -> console.trace.apply(this, Array::slice.call(arguments))
+      logger.debug = -> console.debug.apply(this, Array::slice.call(arguments))
+      logger.info = -> console.info.apply(this, Array::slice.call(arguments))
+      logger.warn = -> console.warn.apply(this, Array::slice.call(arguments))
+      logger.error = -> console.error.apply(this, Array::slice.call(arguments))
+      logger.fatal = -> console.fatal.apply(this, Array::slice.call(arguments))
+
     return logger
+
 
   ###*
    * A mapping function to serialize objects

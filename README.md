@@ -70,6 +70,7 @@ logConfig:
     response: resSerializer # function that maps the response object with fields (status, headers, body)
   src: false # includes a log of the call source location (file, line, function).
              # Determining the source call is slow, therefor it's recommended not to enable this on production.
+  silent: false # don't instantiate the {Bunyan} logger, instead use `console`
   streams: [ # a list of streams that defines the type of output for log messages
     {level: 'info', stream: process.stdout}
     {level: 'debug', path: './sphere-node-utils-debug.log'}
@@ -131,6 +132,9 @@ jasmine-node --verbose --captureExceptions test | ./node_modules/bunyan/bin/buny
 00:34:03.933Z DEBUG sphere-node-connect: Failed to retrieve access_token, retrying...1
 
 ```
+
+##### Silent logs, use `console`
+You can pass a `silent` flag to override the level functions of the `bunyan` logger (debug, info, ...) to print to stdout / stderr using console.
 
 #### TaskQueue
 A `TaskQueue` allows you to queue promises (or function that return promises) which will be executed in parallel sequentially, meaning that new tasks will not be triggered until the previous ones are resolved.
