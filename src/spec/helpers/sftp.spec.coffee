@@ -31,7 +31,7 @@ describe 'SftpHelpers', ->
       @_sftp = sftp
       @logger.debug FILE_LOCAL, 'Local file path'
       @logger.debug FILE_REMOTE, 'Remote file path'
-      @helpers.putFile sftp, FILE_LOCAL, FILE_REMOTE
+      @helpers.safePutFile sftp, FILE_LOCAL, FILE_REMOTE
     .then =>
       @logger.debug 'File uploaded'
       done()
@@ -39,7 +39,7 @@ describe 'SftpHelpers', ->
       @helpers.close @_sftp
       done(error)
     .done()
-  , 10000 # 10sec
+  , 20000 # 20sec
 
   afterEach (done) ->
     @logger.debug 'About to remove all remote files'

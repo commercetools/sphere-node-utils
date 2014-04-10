@@ -74,7 +74,7 @@ class Sftp
   ###*
    * Upload a file.
    * @param {Object} sftp SFTP handle
-   * @param {String} localPath Download file to this path
+   * @param {String} localPath Upload file to this path
    * @param {String} remotePath Path of the remote file
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with an error
   ###
@@ -87,6 +87,32 @@ class Sftp
       else
         deferred.resolve()
     deferred.promise
+
+  ###*
+   * Upload a file safely by temporarly upload it to a tmp folder, moving it then into the
+   * given target path to assure that it's there.
+   * @param {Object} sftp SFTP handle
+   * @param {String} localPath Upload file to this path
+   * @param {String} remotePath Path of the remote file
+   * @return {Promise} A promise, fulfilled with an {Object} or rejected with an error
+  ###
+  safePutFile: (sftp, localPath, remotePath) ->
+    tmpName = "#{remotePath}.tmp"
+    @logger?.debug "About to upload file #{localPath}"
+    @putFile(sftp, localPath, tmpName)
+    .then =>
+      @logger?.debug "File uploaded as #{tmpName}"
+      @stats(sftp, tmpName)
+    .then (stat) =>
+      if stat.isFile()
+        # file has been successfully uploaded, move it to correct path
+        @logger?.debug "File check successful, about to rename it"
+        @moveFile(sftp, tmpName, remotePath)
+      else
+        # failure, cleanup before rejecting
+        @logger?.debug "File check failed, about to cleanup #{tmpName}"
+        @removeFile(sftp, tmpName)
+        .then -> throw new Error 'File upload check failed'
 
   ###*
    * Move/rename a remote resource.
