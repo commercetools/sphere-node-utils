@@ -1,5 +1,5 @@
-fs = require 'fs'
 Q = require 'q'
+fs = require 'q-io/fs'
 _ = require 'underscore'
 Connection = require 'ssh2'
 SftpConfig = require('../../config').config.sftp
@@ -88,10 +88,11 @@ describe 'SftpHelpers', ->
     .done()
 
   it 'should download file from remote server', (done) ->
-    @helpers.getFile @_sftp, FILE_REMOTE, FILE_LOCAL_DOWNLOAD
-    .then ->
-      expect(fs.existsSync(FILE_LOCAL_DOWNLOAD)).toBe true
-      done()
+    fs.makeDirectory(FOLDER_LOCAL)
+    .then => @helpers.getFile @_sftp, FILE_REMOTE, FILE_LOCAL_DOWNLOAD
+    .then -> fs.exists(FILE_LOCAL_DOWNLOAD)
+    .then -> fs.removeTree(FOLDER_LOCAL)
+    .then -> done()
     .fail (error) -> done(error)
     .done()
 
@@ -128,12 +129,12 @@ describe 'SftpHelpers', ->
   it 'should download all files from remote server', (done) ->
     fileRemoteA = "#{FOLDER_REMOTE}/testA.txt"
     fileRemoteB = "#{FOLDER_REMOTE}/testB.txt"
-    @helpers.putFile @_sftp, FILE_LOCAL, fileRemoteA
+    fs.makeDirectory(FOLDER_LOCAL)
+    .then => @helpers.putFile @_sftp, FILE_LOCAL, fileRemoteA
     .then => @helpers.putFile @_sftp, FILE_LOCAL, fileRemoteB
     .then => @helpers.downloadAllFiles @_sftp, FOLDER_LOCAL, FOLDER_REMOTE
-    .then ->
-      expect(fs.existsSync("#{FOLDER_LOCAL}/testA.txt")).toBe true
-      expect(fs.existsSync("#{FOLDER_LOCAL}/testB.txt")).toBe true
-      done()
+    .then -> Q.all [fs.exists("#{FOLDER_LOCAL}/testA.txt"), fs.exists("#{FOLDER_LOCAL}/testB.txt")]
+    .then -> fs.removeTree(FOLDER_LOCAL)
+    .then -> done()
     .fail (error) -> done(error)
     .done()
