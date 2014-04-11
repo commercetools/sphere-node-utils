@@ -176,6 +176,8 @@ Provides promised based wrapped functionalities for some `SFTP` methods
 - `close` TBD
 - `downloadAllFiles` TBD
 
+> The client using the `Sftp` helper should take care of how to send requests to manage remote files. E.g.: multiple concurrency requests to rename a file should be done sequentially to avoid problems (use `Qutils.processList`)
+
 
 #### ProjectCredentialsConfig
 Provides sphere credentials based on the project key.
