@@ -2,6 +2,9 @@ Q = require 'q'
 _ = require 'underscore'
 Connection = require 'ssh2'
 
+uniqueId = (prefix) ->
+  _.uniqueId "#{prefix}#{new Date().getTime()}_"
+
 class Sftp
 
   constructor: (@_options = {}) ->
@@ -96,10 +99,25 @@ class Sftp
    * @param {String} remotePath Path of the remote file
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with an error
   ###
-  safePutFile: (sftp, localPath, remotePath) ->
-    tmpName = "#{remotePath}.tmp"
+  safePutFile: (sftp, localPath, remotePath, forceOverwrite = true) ->
+    tmpName = "#{remotePath}_#{uniqueId('tmp')}"
     @logger?.debug "About to upload file #{localPath}"
-    @putFile(sftp, localPath, tmpName)
+    canUpload = (fileName) =>
+      if forceOverwrite
+        @logger?.debug 'Force overwrite is true, proceed with upload'
+        Q()
+      else
+        @logger?.debug "Force overwrite is false, checking if #{fileName} exists"
+        @stats(sftp, fileName)
+        .then (stat) ->
+          if stat.isFile()
+            Q.reject "Uploading file #{fileName} already exists on the remote server and cannot proceed unless I'm being forced to"
+          else
+            Q()
+        .fail -> Q()
+
+    canUpload(tmpName)
+    .then => @putFile(sftp, localPath, tmpName)
     .then =>
       @logger?.debug "File uploaded as #{tmpName}"
       @stats(sftp, tmpName)
@@ -112,7 +130,7 @@ class Sftp
         # failure, cleanup before rejecting
         @logger?.debug "File check failed, about to cleanup #{tmpName}"
         @removeFile(sftp, tmpName)
-        .then -> throw new Error 'File upload check failed'
+        .then -> Q.reject 'File upload check failed'
 
   ###*
    * Move/rename a remote resource.
