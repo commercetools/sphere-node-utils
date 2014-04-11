@@ -4,6 +4,7 @@ _ = require 'underscore'
 Connection = require 'ssh2'
 SftpConfig = require('../../config').config.sftp
 SftpHelpers = require '../../lib/helpers/sftp'
+Qutils = require '../../lib/mixins/q'
 Logger = require '../../lib/helpers/logger'
 
 describe 'SftpHelpers', ->
@@ -108,7 +109,7 @@ describe 'SftpHelpers', ->
   it 'should move a file on remote server', (done) ->
     fileRemote2 = "#{FOLDER_REMOTE}/test2.txt"
     @helpers.putFile @_sftp, FILE_LOCAL, fileRemote2
-    .then => @helpers.moveFile @_sftp, fileRemote2, FILE_REMOTE_RENAMED
+    .then => @helpers.renameFile @_sftp, fileRemote2, FILE_REMOTE_RENAMED
     .then => @helpers.stats @_sftp, FILE_REMOTE_RENAMED
     .then (stat) =>
       expect(stat.isFile()).toBe true
@@ -118,7 +119,7 @@ describe 'SftpHelpers', ->
     .done()
 
   it 'should handle error properly when moving wrong file', (done) ->
-    @helpers.moveFile @_sftp, '/wrong/bla', '/wrong/blubb'
+    @helpers.renameFile @_sftp, '/wrong/bla', '/wrong/blubb'
     .then -> done('Should not happen')
     .fail (error) ->
       expect(error).toBeDefined()
@@ -138,3 +139,9 @@ describe 'SftpHelpers', ->
     .then -> done()
     .fail (error) -> done(error)
     .done()
+
+  it 'should safely upload multiple files sequentially with same name (no force overwrite)', (done) ->
+    Qutils.processList [1..3], =>
+      @helpers.safePutFile @_sftp, FILE_LOCAL, FILE_REMOTE, false
+    .then -> done()
+    .fail (error) -> done(error)

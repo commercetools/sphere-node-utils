@@ -169,7 +169,8 @@ Provides promised based wrapped functionalities for some `SFTP` methods
 - `getFile` TBD
 - `putFile` TBD
 - `safePutFile` TBD
-- `moveFile` TBD
+- `renameFile` TBD
+- `safeRenameFile` TBD
 - `removeFile` TBD
 - `openSftp` TBD
 - `close` TBD

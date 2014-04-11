@@ -113,8 +113,11 @@ class Sftp
           if stat.isFile()
             Q.reject "Uploading file #{fileName} already exists on the remote server and cannot proceed unless I'm being forced to"
           else
+            @logger?.debug "File #{fileName} doesn't appear to be a file, proceeding with upload"
             Q()
-        .fail -> Q()
+        .fail =>
+          @logger?.debug "File #{fileName} not found, proceeding with upload"
+          Q()
 
     canUpload(tmpName)
     .then => @putFile(sftp, localPath, tmpName)
@@ -125,7 +128,7 @@ class Sftp
       if stat.isFile()
         # file has been successfully uploaded, move it to correct path
         @logger?.debug "File check successful, about to rename it"
-        @moveFile(sftp, tmpName, remotePath)
+        @safeRenameFile(sftp, tmpName, remotePath)
       else
         # failure, cleanup before rejecting
         @logger?.debug "File check failed, about to cleanup #{tmpName}"
@@ -133,13 +136,13 @@ class Sftp
         .then -> Q.reject 'File upload check failed'
 
   ###*
-   * Move/rename a remote resource.
+   * Rename a remote resource.
    * @param {Object} sftp SFTP handle
    * @param {String} srcPath Source path of the remote resource
    * @param {String} destPath Destination path of the remote resource
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with an error
   ###
-  moveFile: (sftp, srcPath, destPath) ->
+  renameFile: (sftp, srcPath, destPath) ->
     deferred = Q.defer()
 
     sftp.rename srcPath, destPath, (err) ->
@@ -148,6 +151,39 @@ class Sftp
       else
         deferred.resolve()
     deferred.promise
+
+  ###*
+   * Rename a remote resource safely, by checking if it's there first and remove it if so.
+   * @param {Object} sftp SFTP handle
+   * @param {String} srcPath Source path of the remote resource
+   * @param {String} destPath Destination path of the remote resource
+   * @return {Promise} A promise, fulfilled with an {Object} or rejected with an error
+  ###
+  safeRenameFile: (sftp, srcPath, destPath) ->
+    ### WORKAROUND
+    Unfortunately, rename will fail if there is already an existing file with the same name.
+    To avoid that, we should remove first the old file, then rename the new one
+    ###
+    @logger?.debug "About to safe rename the file #{srcPath} to #{destPath}"
+    @stats(sftp, destPath)
+    .then (stat) =>
+      @logger?.debug "File #{destPath} already exist, about to remove it before rename it"
+      if stat.isFile()
+        @removeFile(sftp, destPath)
+        .then =>
+          @logger?.debug "File #{destPath} removed, about to rename it"
+          @renameFile(sftp, srcPath, destPath)
+          .then -> Q()
+          .fail (err) -> Q.reject err
+        .fail (err) =>
+          # log this message in order to better identify the problem (sftp errors are not that useful)
+          # and pass the error to the next handler
+          @logger?.debug "Failed to remove file #{destPath} during safeRename"
+          Q.reject err
+      else
+        Q.reject "The resource at #{destPath} already exist and it doesn't appear to be a file. Please check that what you want to rename is a file."
+    .fail => @renameFile(sftp, srcPath, destPath)
+
 
   ###*
    * Remove remote file
