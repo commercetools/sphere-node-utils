@@ -16,7 +16,6 @@ describe 'Mixins', ->
       _.mixin _u
       expect(_.deepClone).toBeDefined()
       expect(_.prettify).toBeDefined()
-      expect(_.prettifyError).toBeDefined()
       expect(_.percentage).toBeDefined()
       expect(_.stringifyQuery).toBeDefined()
       expect(_.parseQuery).toBeDefined()
@@ -66,14 +65,16 @@ describe 'Mixins', ->
     it 'should prettify JSON with custom indentation', ->
       expect(_u.prettify {foo: 'bar'}, 4).toBe '{\n    "foo": "bar"\n}'
 
-  describe '_u :: prettifyError', ->
-
-    it 'should return stack trace', ->
+    it 'should return error instance', ->
       e = new Error 'foo'
-      expect(_u.prettifyError e).toEqual e.stack
+      expect(_u.prettify e).toEqual e
 
-    it 'should return pretty JSON', ->
-      expect(_u.prettifyError {foo: 'bar'}).toBe '{\n  "foo": "bar"\n}'
+    it 'should return if no argument is given', ->
+      expect(_u.prettify()).not.toBeDefined()
+
+    it 'should return argument itself if not an object nor an error', ->
+      expect(_u.prettify 'foo').toBe 'foo'
+      expect(_u.prettify 10).toBe 10
 
   describe '_u :: percentage', ->
 

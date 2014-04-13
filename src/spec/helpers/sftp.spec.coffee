@@ -1,223 +1,147 @@
-fs = require 'fs'
 Q = require 'q'
+fs = require 'q-io/fs'
 _ = require 'underscore'
 Connection = require 'ssh2'
 SftpConfig = require('../../config').config.sftp
 SftpHelpers = require '../../lib/helpers/sftp'
+Qutils = require '../../lib/mixins/q'
+Logger = require '../../lib/helpers/logger'
 
 describe 'SftpHelpers', ->
 
   TEST_FILE = 'test.txt'
   ROOT_REMOTE = '/upload'
-  FILE_REMOTE = "#{ROOT_REMOTE}/#{TEST_FILE}"
+  ROOT_LOCAL = "#{__dirname}/../.."
+  FOLDER_LOCAL = "#{ROOT_LOCAL}/tmp-test"
   FOLDER_REMOTE = "#{ROOT_REMOTE}/data"
-  FILE_LOCAL = "data/#{TEST_FILE}"
-  FILE_LOCAL_DOWNLOAD = "./#{TEST_FILE}"
+  FILE_REMOTE = "#{FOLDER_REMOTE}/#{TEST_FILE}"
+  FILE_REMOTE_RENAMED = "#{FOLDER_REMOTE}/renamed-#{TEST_FILE}"
+  FILE_LOCAL = "#{ROOT_LOCAL}/data/#{TEST_FILE}"
+  FILE_LOCAL_DOWNLOAD = "#{FOLDER_LOCAL}/#{TEST_FILE}"
 
   beforeEach (done) ->
-    @helpers = new SftpHelpers SftpConfig
+    @logger = new Logger
+      streams: [
+        level: 'info', stream: process.stdout
+      ]
+    @helpers = new SftpHelpers _.extend {}, SftpConfig,
+      logger: @logger
 
-    # initialize sftp session used for validating remote changes
-    @_conn = new Connection()
-
-    @_conn.on 'ready', =>
-      @_conn.sftp (err, sftp) =>
-        if err
-          done(err)
-        else
-          @_sftp = sftp
-          done()
-
-    @_conn.connect
-      host: SftpConfig.host
-      username: SftpConfig.username
-      password: SftpConfig.password
+    @helpers.openSftp()
+    .then (sftp) =>
+      @_sftp = sftp
+      @logger.debug FILE_LOCAL, 'Local file path'
+      @logger.debug FILE_REMOTE, 'Remote file path'
+      @helpers.safePutFile sftp, FILE_LOCAL, FILE_REMOTE
+    .then =>
+      @logger.debug 'File uploaded'
+      done()
+    .fail (error) =>
+      @helpers.close @_sftp
+      done(error)
+    .done()
+  , 20000 # 20sec
 
   afterEach (done) ->
-    @_sftp.end()
-    @_conn.end()
-    done()
+    @logger.debug 'About to remove all remote files'
+    @helpers.listFiles @_sftp, FOLDER_REMOTE
+    .then (files) =>
+      @logger.debug files
+      Q.all _.filter(files, (f) ->
+        switch f.filename
+          when '.', '..' then false
+          else true
+      ).map (f) =>
+        @logger.debug "About to remove #{f.filename}"
+        @helpers.removeFile @_sftp, "#{FOLDER_REMOTE}/#{f.filename}"
+      .then =>
+        @helpers.close @_sftp
+        done()
+      .fail (error) -> done(error)
+    .fail (error) ->
+      if error.message is 'No such file'
+        done()
+      else
+        done(error)
+    .done()
+  , 15000 # 15sec
 
   it 'should be initialized', ->
     expect(@helpers).toBeDefined()
 
-  it 'should open a sftp connection', (done) ->
-    @helpers.openSftp().then (sftp) =>
-      expect(sftp).toBeDefined()
-      @helpers.close sftp
-      done()
-    .fail (result) ->
-      done(result)
+  it 'should open a sftp connection', ->
+    expect(@_sftp).toBeDefined()
 
   it 'should list files', (done) ->
-    @sftp
-    @helpers.openSftp()
-    .then (sftp) =>
-      @sftp = sftp
-      @helpers.listFiles(sftp, FOLDER_REMOTE)
-    .then (files) =>
+    @helpers.listFiles(@_sftp, FOLDER_REMOTE)
+    .then (files) ->
       expect(_.size files).toBeGreaterThan 0
-      @helpers.close @sftp
       done()
-    .fail (result) =>
-      @helpers.close @sftp
-      done(result)
+    .fail (error) -> done(error)
+    .done()
 
-  describe 'getFile()', ->
+  it 'should get file stats', (done) ->
+    @helpers.stats(@_sftp, FILE_REMOTE)
+    .then (stat) ->
+      expect(stat.isFile()).toBe true
+      done()
+    .fail (error) -> done(error)
+    .done()
 
-    beforeEach (done) ->
-      @_sftp.fastPut FILE_LOCAL, FILE_REMOTE, (err) ->
-        if err
-          done(err)
-        else
-          done()
+  it 'should download file from remote server', (done) ->
+    fs.makeDirectory(FOLDER_LOCAL)
+    .then => @helpers.getFile @_sftp, FILE_REMOTE, FILE_LOCAL_DOWNLOAD
+    .then -> fs.exists(FILE_LOCAL_DOWNLOAD)
+    .then -> fs.removeTree(FOLDER_LOCAL)
+    .then -> done()
+    .fail (error) -> done(error)
+    .done()
 
-    afterEach (done) ->
-      removeLocalFile FILE_LOCAL_DOWNLOAD
-      .then =>
-        removeRemoteFile(@_sftp, FILE_REMOTE)
-        done()
-      .fail (result) ->
-        done(result)
+  it 'should handle error properly', (done) ->
+    @helpers.getFile @_sftp, '/wrong', FILE_LOCAL_DOWNLOAD
+    .then -> done('Should not happen')
+    .fail (error) ->
+      expect(error).toBeDefined()
+      done()
+    .done()
+  , 30000 # 30sec
 
-    it 'should download file from remote server', (done) ->
+  it 'should move a file on remote server', (done) ->
+    fileRemote2 = "#{FOLDER_REMOTE}/test2.txt"
+    @helpers.putFile @_sftp, FILE_LOCAL, fileRemote2
+    .then => @helpers.renameFile @_sftp, fileRemote2, FILE_REMOTE_RENAMED
+    .then => @helpers.stats @_sftp, FILE_REMOTE_RENAMED
+    .then (stat) =>
+      expect(stat.isFile()).toBe true
+      @helpers.removeFile @_sftp, FILE_REMOTE_RENAMED
+    .then -> done()
+    .fail (error) -> done(error)
+    .done()
 
-      @sftp
-      @helpers.openSftp()
-      .then (sftp) =>
-        @sftp = sftp
-        @helpers.getFile(sftp, FILE_REMOTE, FILE_LOCAL_DOWNLOAD)
-      .then =>
-        expect(fs.existsSync(TEST_FILE)).toBe true
-        @helpers.close @sftp
-        done()
-      .fail (result) =>
-        @helpers.close @sftp
-        done(result)
+  it 'should handle error properly when moving wrong file', (done) ->
+    @helpers.renameFile @_sftp, '/wrong/bla', '/wrong/blubb'
+    .then -> done('Should not happen')
+    .fail (error) ->
+      expect(error).toBeDefined()
+      done()
+    .done()
+  , 30000 # 30sec
 
-    it 'should handle error properly', (done) ->
+  it 'should download all files from remote server', (done) ->
+    fileRemoteA = "#{FOLDER_REMOTE}/testA.txt"
+    fileRemoteB = "#{FOLDER_REMOTE}/testB.txt"
+    fs.makeDirectory(FOLDER_LOCAL)
+    .then => @helpers.putFile @_sftp, FILE_LOCAL, fileRemoteA
+    .then => @helpers.putFile @_sftp, FILE_LOCAL, fileRemoteB
+    .then => @helpers.downloadAllFiles @_sftp, FOLDER_LOCAL, FOLDER_REMOTE
+    .then -> Q.all [fs.exists("#{FOLDER_LOCAL}/testA.txt"), fs.exists("#{FOLDER_LOCAL}/testB.txt")]
+    .then -> fs.removeTree(FOLDER_LOCAL)
+    .then -> done()
+    .fail (error) -> done(error)
+    .done()
 
-      @sftp
-      @helpers.openSftp()
-      .then (sftp) =>
-        @sftp = sftp
-        @helpers.getFile(sftp, '/wrong', FILE_LOCAL_DOWNLOAD)
-      .then =>
-        @helpers.close @sftp
-        done('should call fail() method.')
-      .fail (result) =>
-        @helpers.close @sftp
-        done()
-
-  describe 'moveFile()', ->
-
-    FILE_REMOTE_RENAMED = "#{ROOT_REMOTE}/renamed-#{TEST_FILE}"
-
-    beforeEach (done) ->
-      @_sftp.fastPut FILE_LOCAL, FILE_REMOTE, (err) ->
-        if err
-          done(err)
-        else
-          done()
-
-    afterEach (done) ->
-
-      removeRemoteFile(@_sftp, FILE_REMOTE_RENAMED)
-      .then =>
-        removeRemoteFile(@_sftp, FILE_REMOTE)
-      .then ->
-        done()
-      .fail (result) ->
-        done(result)
-
-    it 'should move a file on remote server', (done) ->
-
-      @sftp
-      @helpers.openSftp()
-      .then (sftp) =>
-        @sftp = sftp
-        @helpers.moveFile(sftp, FILE_REMOTE, FILE_REMOTE_RENAMED)
-      .then =>
-        existsRemoteFile @_sftp, FILE_REMOTE_RENAMED
-      .then (exists) =>
-        expect(exists).toBe true
-        @helpers.close @sftp
-        done()
-      .fail (result) =>
-        @helpers.close @sftp
-        done(result)
-
-    it 'should handle error properly', (done) ->
-
-      @sftp
-      @helpers.openSftp()
-      .then (sftp) =>
-        @sftp = sftp
-        @helpers.moveFile(sftp, '/wrong/bla', '/wrong/blubb')
-      .then =>
-        @helpers.close @sftp
-        done('should call fail() method.')
-      .fail (result) =>
-        @helpers.close @sftp
-        done()
-
-  ##################
-  # helper methods #
-  ##################
-
-  ###
-  Remove local file if existing.
-  @param {string} path Path to resource.
-  @return Promise
-  ###
-  removeLocalFile = (path) ->
-    deferred = Q.defer()
-    fs.exists path, (exists) ->
-      if exists
-        fs.unlink path, (err) ->
-          if err
-            deferred.reject err
-          else
-            deferred.resolve()
-      else
-        deferred.resolve()
-
-    deferred.promise
-
-  ###
-  Remove remote file if existing.
-  @param {object} sftp SFTP handle.
-  @param {string} path Path to resource.
-  @return Promise
-  ###
-  removeRemoteFile = (sftp, path) ->
-    deferred = Q.defer()
-    sftp.unlink path, (err) ->
-      if err
-        if err.message is 'No such file'
-          deferred.resolve false
-        else
-          deferred.reject err
-      else
-        deferred.resolve()
-
-    deferred.promise
-
-  ###
-  Checks if resource exists.
-  @param {object} sftp SFTP handle.
-  @param {string} path Path to resource.
-  @return Returns 'true' if file exists, otherwise 'false'.
-  ###
-  existsRemoteFile = (sftp, path) ->
-    deferred = Q.defer()
-    sftp.stat path, (err, stats) ->
-      if err
-        if err.message is 'No such file'
-          deferred.resolve false
-        else
-          deferred.reject err
-      else
-        deferred.resolve true
-
-    deferred.promise
+  it 'should safely upload multiple files sequentially with same name (no force overwrite)', (done) ->
+    Qutils.processList [1..3], =>
+      @helpers.safePutFile @_sftp, FILE_LOCAL, FILE_REMOTE, false
+    .then -> done()
+    .fail (error) -> done(error)

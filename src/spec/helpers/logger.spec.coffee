@@ -27,6 +27,7 @@ describe 'Logger', ->
       name: 'foo'
       serializers: foo: -> 'bar'
       src: true
+      silent: true
       streams: [
         {level: 'warn', stream: process.stdout}
       ]

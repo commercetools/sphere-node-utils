@@ -2,7 +2,9 @@
 
 # Node.js Utils
 
-[![Build Status](https://secure.travis-ci.org/sphereio/sphere-node-utils.png?branch=master)](http://travis-ci.org/sphereio/sphere-node-utils) [![Coverage Status](https://coveralls.io/repos/sphereio/sphere-node-utils/badge.png)](https://coveralls.io/r/sphereio/sphere-node-utils) [![Dependency Status](https://david-dm.org/sphereio/sphere-node-utils.png?theme=shields.io)](https://david-dm.org/sphereio/sphere-node-utils) [![devDependency Status](https://david-dm.org/sphereio/sphere-node-utils/dev-status.png?theme=shields.io)](https://david-dm.org/sphereio/sphere-node-utils#info=devDependencies) [![NPM version](https://badge.fury.io/js/sphere-node-utils.png)](http://badge.fury.io/js/sphere-node-utils)
+[![NPM](https://nodei.co/npm/sphere-node-utils.png?downloads=true)](https://www.npmjs.org/package/sphere-node-utils)
+
+[![Build Status](https://secure.travis-ci.org/sphereio/sphere-node-utils.png?branch=master)](http://travis-ci.org/sphereio/sphere-node-utils) [![NPM version](https://badge.fury.io/js/sphere-node-utils.png)](http://badge.fury.io/js/sphere-node-utils) [![Coverage Status](https://coveralls.io/repos/sphereio/sphere-node-utils/badge.png)](https://coveralls.io/r/sphereio/sphere-node-utils) [![Dependency Status](https://david-dm.org/sphereio/sphere-node-utils.png?theme=shields.io)](https://david-dm.org/sphereio/sphere-node-utils) [![devDependency Status](https://david-dm.org/sphereio/sphere-node-utils/dev-status.png?theme=shields.io)](https://david-dm.org/sphereio/sphere-node-utils#info=devDependencies)
 
 This module shares helpers among all [SPHERE.IO](http://sphere.io/) Node.js components.
 
@@ -17,10 +19,10 @@ This module shares helpers among all [SPHERE.IO](http://sphere.io/) Node.js comp
     * [Repeater](#repeater)
     * [ElasticIo](#elasticio)
   * [Mixins](#mixins)
+    * [Qutils](#qutils)
     * [Underscore](#underscore)
       * [_.deepClone](#_deepclone)
       * [_.prettify](#_prettify)
-      * [_.prettifyError](#_prettifyerror)
       * [_.percentage](#_percentage)
       * [_.stringifyQuery](#_stringifyquery)
       * [_.parseQuery](#_parsequery)
@@ -38,11 +40,10 @@ TaskQueue = SphereUtils.TaskQueue
 Sftp = SphereUtils.Sftp
 ProjectCredentialsConfig = SphereUtils.ProjectCredentialsConfig
 ElasticIo = SphereUtils.ElasticIo
-Qbatch = SphereUtils.Qbatch
 _u = SphereUtils._u
 
 # or
-{Logger, TaskQueue, Sftp, ProjectCredentialsConfig, ElasticIo, Qbatch, _u} = require 'sphere-node-utils'
+{Logger, TaskQueue, Sftp, ProjectCredentialsConfig, ElasticIo, _u} = require 'sphere-node-utils'
 ```
 
 ## Documentation
@@ -72,6 +73,7 @@ logConfig:
     response: resSerializer # function that maps the response object with fields (status, headers, body)
   src: false # includes a log of the call source location (file, line, function).
              # Determining the source call is slow, therefor it's recommended not to enable this on production.
+  silent: false # don't instantiate the {Bunyan} logger, instead use `console`
   streams: [ # a list of streams that defines the type of output for log messages
     {level: 'info', stream: process.stdout}
     {level: 'debug', path: './sphere-node-utils-debug.log'}
@@ -134,6 +136,9 @@ jasmine-node --verbose --captureExceptions test | ./node_modules/bunyan/bin/buny
 
 ```
 
+##### Silent logs, use `console`
+You can pass a `silent` flag to override the level functions of the `bunyan` logger (debug, info, ...) to print to stdout / stderr using console.
+
 #### TaskQueue
 A `TaskQueue` allows you to queue promises (or function that return promises) which will be executed in parallel sequentially, meaning that new tasks will not be triggered until the previous ones are resolved.
 
@@ -157,10 +162,26 @@ Available methods:
 - `addTask` adds a task (promise) to the queue and returns a new promise
 
 #### Sftp
-_(Coming soon)_
+Provides promised based wrapped functionalities for some `SFTP` methods
+
+- `listFiles` TBD
+- `stats` TBD
+- `readFile` _not implemented yet_
+- `saveFile` _not implemented yet_
+- `getFile` TBD
+- `putFile` TBD
+- `safePutFile` TBD
+- `renameFile` TBD
+- `safeRenameFile` TBD
+- `removeFile` TBD
+- `openSftp` TBD
+- `close` TBD
+- `downloadAllFiles` TBD
+
+> The client using the `Sftp` helper should take care of how to send requests to manage remote files. E.g.: multiple concurrency requests to rename a file should be done sequentially to avoid problems (use `Qutils.processList`)
+
 
 #### ProjectCredentialsConfig
-
 Provides sphere credentials based on the project key.
 
 Following files are used to store the credentials and would be searched (descending priority):
@@ -203,16 +224,34 @@ repeater.execute
 ### Mixins
 Currently following mixins are provided by `SphereUtils`:
 
-- `Qbatch`
-  - `all`
+- `Qutils`
+  - `processList`
 - `underscore`
   - `deepClone`
   - `prettify`
-  - `prettifyError`
   - `percentage`
   - `stringifyQuery`
   - `parseQuery`
 
+#### Qutils
+A collections of Q utils (promise-based)
+
+```coffeescript
+{Qutils} = require 'sphere-node-utils'
+```
+
+##### `processList`
+Process each element in the given list using the function `fn` (called on each iteration).
+The function `fn` has to return a promise that should be resolved when all elements of the page are processed.
+
+```coffeescript
+list = [{key: '1'}, {key: '2'}, {key: '3'}]
+processList list, (elem) ->
+  doSomethingWith(elem) # it's a promise
+  .then ->
+    # something else
+    anotherPromise()
+```
 
 #### Underscore
 A collection of methods to be used as `underscore` mixins. To install
@@ -235,37 +274,18 @@ cloned = _.deepClone(obj)
 ```
 
 ##### `_.prettify`
-Returns a prettify JSON object
+Returns a pretty-print formatted JSON string.
 
 ```coffeescript
 obj = foo: 'bar'
-pretty = _.prettify(obj)
+pretty = _.prettify(obj) # you can pass the indentation value as optional 2nd argument (default 2)
 # =>
 # "{
 #   "foo": "bar"
 # }"
 ```
 
-##### `_.prettifyError`
-Returns either a prettify JSON object or the Error stack
-
-```coffeescript
-e = new Error 'foo'
-prettyOrStack = _.prettifyError(e)
-# => stack
-# "Error: foo
-#   at <anonymous>:2:9
-#   at Object.InjectedScript._evaluateOn (<anonymous>:613:39)
-#   at Object.InjectedScript._evaluateAndWrap (<anonymous>:573:52)
-#   at Object.InjectedScript.evaluate (<anonymous>:492:21)"
-
-obj = foo: 'bar'
-pretty = _.prettifyError(obj)
-# => pretty JSON
-# "{
-#   "foo": "bar"
-# }"
-```
+> If the argument is not a JSON object, the argument itself is returned (also for `Error` instances)
 
 ##### `_.percentage`
 Returns the percentage of the given values

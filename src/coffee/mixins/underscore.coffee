@@ -22,25 +22,18 @@ module.exports =
     JSON.parse(JSON.stringify(obj))
 
   ###*
-   * Stringifies a JSON object in a pretty format
+   * Stringifies a JSON object in a pretty format.
+   * In case of a non JSON object, the argument itself is returned (also for Error instances).
    * @param {Object} obj A JSON object
    * @param {Number} [indentation] The indentation number (default 2)
    * @return {String} A pretty string
   ###
   prettify: (obj, indentation = 2) ->
-    JSON.stringify obj, null, indentation
-
-  ###*
-   * Returns either a pretty string (from JSON object) or the error stack
-   * @param {Object} objOrError Either a JSON object or an Error
-   * @param {Number} [indentation] The indentation number (default 2)
-   * @return {String} A pretty string or the error stack
-  ###
-  prettifyError: (objOrError, indentation = 2) ->
-    if objOrError instanceof Error
-      objOrError.stack
-    else
-      @prettify objOrError, indentation
+    return unless obj
+    switch
+      when obj instanceof Error then obj
+      when _.isObject(obj) then JSON.stringify obj, null, indentation
+      else obj
 
   ###*
    * Returns the percentage of the given values
