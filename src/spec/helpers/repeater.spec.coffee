@@ -1,5 +1,5 @@
 Q = require 'q'
-{_} = require 'underscore'
+_ = require 'underscore'
 _.mixin require('underscore.string').exports()
 
 {Repeater} = require '../../lib/helpers/repeater'

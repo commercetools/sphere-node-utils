@@ -1,5 +1,5 @@
 Q = require 'q'
-{_} = require 'underscore'
+_ = require 'underscore'
 
 ###*
  * Repeater is designed to repeat some arbitrary function unless the execution of this function does not throw any errors
