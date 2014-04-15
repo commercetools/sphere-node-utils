@@ -19,18 +19,22 @@ module.exports =
    *     doSomethingWith(elem) # it's a promise
    *     .then ->
    *       # something else
-   *       anotherPromise()
+   *       anotherPromise().then -> Q('OK')
+   *   .then (results) -> # results will be an array ['OK', 'OK', 'OK']
   ###
   processList: (list, fn) ->
     throw new Error 'Please provide a function to process the list' unless _.isFunction fn
     d = Q.defer()
+    acc = []
     _process = (tick) ->
       if tick >= list.length
-        d.resolve()
+        d.resolve(acc)
       else
         elem = list[tick]
         fn(elem)
-        .then -> _process(tick + 1)
+        .then (result) ->
+          acc.push(result)
+          _process(tick + 1)
         .fail (error) -> d.reject error
         .done()
     _process(0)
