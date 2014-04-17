@@ -10,6 +10,7 @@ module.exports = class
   constructor: (options = {}) ->
     {logConfig, @additionalFields} = _.defaults options,
       additionalFields: {}
+    @tmpAdditionalFields = {}
     @bunyanLogger = new Logger logConfig
 
   _wrapOptions: (type, opts, msg) ->
@@ -17,8 +18,13 @@ module.exports = class
       msg = opts
       opts = {}
 
-    _.extend opts, @additionalFields
+    _.extend opts, @additionalFields, @tmpAdditionalFields
+    @tmpAdditionalFields = {} # reset it
     @bunyanLogger[type](opts, msg)
+
+  withField: (obj) ->
+    _.extend @tmpAdditionalFields, obj
+    this
 
   trace: (opts, msg) -> @_wrapOptions 'trace', opts, msg
   debug: (opts, msg) -> @_wrapOptions 'debug', opts, msg
