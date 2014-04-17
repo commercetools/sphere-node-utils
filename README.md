@@ -13,6 +13,7 @@ This module shares helpers among all [SPHERE.IO](http://sphere.io/) Node.js comp
 * [Documentation](#documentation)
   * [Helpers](#helpers)
     * [Logger](#logger)
+    * [ExtendedLogger](#extendedlogger)
     * [TaskQueue](#taskqueue)
     * [Sftp](#sftp)
     * [ProjectCredentialsConfig](#projectcredentialsconfig)
@@ -138,6 +139,32 @@ jasmine-node --verbose --captureExceptions test | ./node_modules/bunyan/bin/buny
 
 ##### Silent logs, use `console`
 You can pass a `silent` flag to override the level functions of the `bunyan` logger (debug, info, ...) to print to stdout / stderr using console.
+
+#### ExtendedLogger
+An `ExtendedLogger` allows you to wrap additional fields to the logged JSON object, by either defining them on class instantiation or by chaining them before calling the log level method.
+
+> Under the hood it uses the [Logger](#logger) `Bunyan` object
+
+```coffeescript
+logger = new ExtendedLogger
+  additionalFields:
+    project_key: 'foo'
+    another_field: 'bar'
+  logConfig: # see config above (Logger)
+    streams: [
+      { level: 'info', stream: process.stdout }
+    ]
+
+# then use the logger as usual
+
+logger.info {id: 123}, 'Hello world'
+# => {"name":"sphere-node-utils","hostname":"Nicolas-MacBook-Pro.local","pid":25856,"level":30,"id":123,"project_key":"foo","another_field":"bar","msg":"Hello world","time":"2014-04-17T10:54:05.237Z","v":0}
+
+# or by chaining
+
+logger.withField({token: 'qwerty'}).info {id: 123}, 'Hello world'
+# => {"name":"sphere-node-utils","hostname":"Nicolas-MacBook-Pro.local","pid":25856,"level":30,"id":123,"project_key":"foo","another_field":"bar", "token": "qwerty","msg":"Hello world","time":"2014-04-17T10:54:05.237Z","v":0}
+```
 
 #### TaskQueue
 A `TaskQueue` allows you to queue promises (or function that return promises) which will be executed in parallel sequentially, meaning that new tasks will not be triggered until the previous ones are resolved.
