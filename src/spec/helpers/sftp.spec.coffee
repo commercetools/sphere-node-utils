@@ -145,3 +145,4 @@ describe 'SftpHelpers', ->
       @helpers.safePutFile @_sftp, FILE_LOCAL, FILE_REMOTE, false
     .then -> done()
     .fail (error) -> done(error)
+  , 30000 # 30sec
