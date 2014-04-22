@@ -273,12 +273,18 @@ The function `fn` has to return a promise that should be resolved when all eleme
 
 ```coffeescript
 list = [{key: '1'}, {key: '2'}, {key: '3'}]
-processList list, (elem) ->
-  doSomethingWith(elem) # it's a promise
+processList list, (elems) -> # elems is an array
+  doSomethingWith(elems) # it's a promise
   .then ->
     # something else
     anotherPromise()
 ```
+
+> Note that the argument passed to the process function is always an array, containing a number of elements defined by `maxParallel` option
+
+You can pass some options as second argument:
+- `accumulate` whether the results should be accumulated or not (default `true`). If not, an empty array will be returned from the resolved promise.
+- `maxParallel` how many elements from the list will be passed to the process `fn` function (default `1`)
 
 #### Underscore
 A collection of methods to be used as `underscore` mixins. To install
