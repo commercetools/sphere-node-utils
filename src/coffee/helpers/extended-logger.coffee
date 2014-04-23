@@ -17,10 +17,11 @@ module.exports = class
     if not msg and _.isString opts
       msg = opts
       opts = {}
-
-    _.extend opts, @additionalFields, @tmpAdditionalFields
+    wrappedData =
+      data: opts
+    _.extend wrappedData, @additionalFields, @tmpAdditionalFields
     @tmpAdditionalFields = {} # reset it
-    @bunyanLogger[type](opts, msg)
+    @bunyanLogger[type](wrappedData, msg)
 
   withField: (obj) ->
     _.extend @tmpAdditionalFields, obj
