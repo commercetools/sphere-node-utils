@@ -209,7 +209,7 @@ class Sftp
     deferred = Q.defer()
 
     @conn = new Connection()
-    # TODO: use Logger ?
+
     @conn.on 'ready', =>
       @logger?.debug 'Connection :: ready'
       @conn.sftp (err, sftp) =>
@@ -219,11 +219,12 @@ class Sftp
           sftp.on 'end', =>
             @logger?.debug 'SFTP :: end'
           deferred.resolve sftp
-
     @conn.on 'error', (err) =>
       @logger?.debug err, 'Connection :: error'
+      deferred.reject err
     @conn.on 'close', (hadError) =>
       @logger?.debug "Connection :: close - had error: #{hadError}"
+      deferred.reject 'Error on closing SFTP connection' if hadError
     @conn.on 'end', =>
       @logger?.debug 'Connection :: end'
 
