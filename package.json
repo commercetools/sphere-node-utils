@@ -32,9 +32,9 @@
     "test": "grunt coverage"
   },
   "dependencies": {
-    "bunyan": "0.22.1",
-    "q": "1.0.0",
-    "q-io": "1.11.0",
+    "bunyan": "1.0.0",
+    "q": "1.0.x",
+    "q-io": "1.11.x",
     "ssh2": "0.2.21",
     "underscore": "1.6.0",
     "underscore.string": "2.3.3",
@@ -49,7 +49,7 @@
     "grunt-contrib-coffee": "0.10.1",
     "grunt-contrib-concat": "0.4.0",
     "grunt-contrib-watch": "0.6.1",
-    "grunt-shell": "0.6.4",
+    "grunt-shell": "0.7.0",
     "istanbul": "0.2.7",
     "jasmine-node": "1.13.1",
     "sphere-coffeelint": "sphereio/sphere-coffeelint.git#master"
