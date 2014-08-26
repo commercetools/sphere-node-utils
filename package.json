@@ -32,7 +32,7 @@
     "test": "grunt coverage"
   },
   "dependencies": {
-    "bunyan": "1.0.0",
+    "bunyan": "1.0.1",
     "q": "1.0.x",
     "q-io": "1.11.x",
     "ssh2": "0.2.21",
