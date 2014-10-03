@@ -1,11 +1,33 @@
-Q = require 'q'
-fs = require 'q-io/fs'
+debug = require('debug')('spec:sftp')
 _ = require 'underscore'
+Promise = require 'bluebird'
+fs = Promise.promisifyAll require('fs')
 Connection = require 'ssh2'
 SftpConfig = require('../../config').config.sftp
 SftpHelpers = require '../../lib/helpers/sftp'
-Qutils = require '../../lib/mixins/q'
-Logger = require '../../lib/helpers/logger'
+
+fsExistsAsync = (path) ->
+  new Promise (resolve, reject) ->
+    fs.exists path, (exists) ->
+      if exists
+        resolve(true)
+      else
+        resolve(false)
+
+fsRmDirRecursive = (path) ->
+  new Promise (resolve, reject) ->
+    # TODO: make it async
+    _rmRecursive = ->
+      if fs.existsSync(path)
+        for file in fs.readdirSync(path)
+          currPath = "#{path}/#{file}"
+          if fs.lstatSync(currPath).isDirectory()
+            _rmRecursive(currPath)
+          else
+            fs.unlinkSync(currPath)
+        fs.rmdirSync(path)
+    _rmRecursive()
+    resolve()
 
 describe 'SftpHelpers', ->
 
@@ -20,45 +42,43 @@ describe 'SftpHelpers', ->
   FILE_LOCAL_DOWNLOAD = "#{FOLDER_LOCAL}/#{TEST_FILE}"
 
   beforeEach (done) ->
-    @logger = new Logger
-      streams: [
-        level: 'info', stream: process.stdout
-      ]
-    @helpers = new SftpHelpers _.extend {}, SftpConfig,
-      logger: @logger
-
+    @helpers = new SftpHelpers SftpConfig
+    # sftpDisposer = =>
+    #   @helpers.openSftp().disposer (sftp) => @helpers.close sftp
+    # Promise.using sftpDisposer(), (sftp) =>
     @helpers.openSftp()
     .then (sftp) =>
       @_sftp = sftp
-      @logger.debug FILE_LOCAL, 'Local file path'
-      @logger.debug FILE_REMOTE, 'Remote file path'
+      debug 'local file path: %s', FILE_LOCAL
+      debug 'remote file path: %s', FILE_REMOTE
       @helpers.safePutFile sftp, FILE_LOCAL, FILE_REMOTE
-    .then =>
-      @logger.debug 'File uploaded'
+    .then ->
+      debug 'File uploaded'
       done()
-    .fail (error) =>
-      @helpers.close @_sftp
-      done(error)
+    .catch (error) -> done(error)
     .done()
   , 20000 # 20sec
 
   afterEach (done) ->
-    @logger.debug 'About to remove all remote files'
-    @helpers.listFiles @_sftp, FOLDER_REMOTE
+    debug 'About to remove all remote files'
+    # sftpDisposer = =>
+    #   @helpers.listFiles(@_sftp, FOLDER_REMOTE).disposer => @helpers.close @_sftp
+    # Promise.using sftpDisposer(), (files) =>
+    @helpers.listFiles(@_sftp, FOLDER_REMOTE)
     .then (files) =>
-      @logger.debug files
-      Q.all _.filter(files, (f) ->
+      debug 'files to be removed: %j', files
+      Promise.all _.filter(files, (f) ->
         switch f.filename
           when '.', '..' then false
           else true
       ).map (f) =>
-        @logger.debug "About to remove #{f.filename}"
+        debug "About to remove #{f.filename}"
         @helpers.removeFile @_sftp, "#{FOLDER_REMOTE}/#{f.filename}"
       .then =>
         @helpers.close @_sftp
         done()
-      .fail (error) -> done(error)
-    .fail (error) ->
+      .catch (error) -> done(error)
+    .catch (error) ->
       if error.message is 'No such file'
         done()
       else
@@ -77,7 +97,7 @@ describe 'SftpHelpers', ->
     .then (files) ->
       expect(_.size files).toBeGreaterThan 0
       done()
-    .fail (error) -> done(error)
+    .catch (error) -> done(error)
     .done()
 
   it 'should get file stats', (done) ->
@@ -85,22 +105,30 @@ describe 'SftpHelpers', ->
     .then (stat) ->
       expect(stat.isFile()).toBe true
       done()
-    .fail (error) -> done(error)
+    .catch (error) -> done(error)
     .done()
 
   it 'should download file from remote server', (done) ->
-    fs.makeDirectory(FOLDER_LOCAL)
+    fsExistsAsync(FOLDER_LOCAL)
+    .then (exists) ->
+      if exists
+        Promise.resolve() # folder exists, continue
+      else
+        fs.mkdirAsync(FOLDER_LOCAL)
     .then => @helpers.getFile @_sftp, FILE_REMOTE, FILE_LOCAL_DOWNLOAD
-    .then -> fs.exists(FILE_LOCAL_DOWNLOAD)
-    .then -> fs.removeTree(FOLDER_LOCAL)
+    .then -> fsExistsAsync(FILE_LOCAL_DOWNLOAD)
+    .then (exists) ->
+      expect(exists).toBe true
+      Promise.resolve()
+    .then -> fsRmDirRecursive(FOLDER_LOCAL)
     .then -> done()
-    .fail (error) -> done(error)
+    .catch (error) -> done(error)
     .done()
 
   it 'should handle error properly', (done) ->
     @helpers.getFile @_sftp, '/wrong', FILE_LOCAL_DOWNLOAD
     .then -> done('Should not happen')
-    .fail (error) ->
+    .catch (error) ->
       expect(error).toBeDefined()
       done()
     .done()
@@ -115,13 +143,13 @@ describe 'SftpHelpers', ->
       expect(stat.isFile()).toBe true
       @helpers.removeFile @_sftp, FILE_REMOTE_RENAMED
     .then -> done()
-    .fail (error) -> done(error)
+    .catch (error) -> done(error)
     .done()
 
   it 'should handle error properly when moving wrong file', (done) ->
     @helpers.renameFile @_sftp, '/wrong/bla', '/wrong/blubb'
     .then -> done('Should not happen')
-    .fail (error) ->
+    .catch (error) ->
       expect(error).toBeDefined()
       done()
     .done()
@@ -130,19 +158,29 @@ describe 'SftpHelpers', ->
   it 'should download all files from remote server', (done) ->
     fileRemoteA = "#{FOLDER_REMOTE}/testA.txt"
     fileRemoteB = "#{FOLDER_REMOTE}/testB.txt"
-    fs.makeDirectory(FOLDER_LOCAL)
+    fsExistsAsync(FOLDER_LOCAL)
+    .then (exists) ->
+      if exists
+        Promise.resolve() # folder exists, continue
+      else
+        fs.mkdirAsync(FOLDER_LOCAL)
     .then => @helpers.putFile @_sftp, FILE_LOCAL, fileRemoteA
     .then => @helpers.putFile @_sftp, FILE_LOCAL, fileRemoteB
     .then => @helpers.downloadAllFiles @_sftp, FOLDER_LOCAL, FOLDER_REMOTE
-    .then -> Q.all [fs.exists("#{FOLDER_LOCAL}/testA.txt"), fs.exists("#{FOLDER_LOCAL}/testB.txt")]
-    .then -> fs.removeTree(FOLDER_LOCAL)
+    .then -> Promise.all [fsExistsAsync("#{FOLDER_LOCAL}/testA.txt"), fsExistsAsync("#{FOLDER_LOCAL}/testB.txt")]
+    .spread (existsA, existsB) ->
+      expect(existsA).toBe true
+      expect(existsB).toBe true
+      Promise.resolve()
+    .then -> fsRmDirRecursive(FOLDER_LOCAL)
     .then -> done()
-    .fail (error) -> done(error)
+    .catch (error) -> done(error)
     .done()
 
   it 'should safely upload multiple files sequentially with same name (no force overwrite)', (done) ->
-    Qutils.processList [1..3], =>
+    Promise.map [1..3], =>
       @helpers.safePutFile @_sftp, FILE_LOCAL, FILE_REMOTE, false
+    , {concurrency: 1}
     .then -> done()
-    .fail (error) -> done(error)
+    .catch (error) -> done(error)
   , 30000 # 30sec

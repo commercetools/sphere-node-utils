@@ -9,4 +9,3 @@ exports.ElasticIo = require './helpers/elasticio'
 
 # mixins
 exports.Qutils = require './mixins/q'
-exports._u = require './mixins/underscore'

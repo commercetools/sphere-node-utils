@@ -1,6 +1,5 @@
 Q = require 'q'
 _ = require 'underscore'
-_.mixin require '../../lib/mixins/underscore'
 Qutils = require '../../lib/mixins/q'
 
 describe 'Qutils', ->
@@ -14,7 +13,7 @@ describe 'Qutils', ->
     .then (results) ->
       expect(results).toEqual [1, 2, 3, 4, 5]
       done()
-    .fail (error) -> done _.prettify error
+    .fail (error) -> done error
 
   it 'should process a list of elements sequentially (maxParallel 5)', (done) ->
     count = 1
@@ -26,7 +25,7 @@ describe 'Qutils', ->
     .then (results) ->
       expect(results).toEqual [1, 2]
       done()
-    .fail (error) -> done _.prettify error
+    .fail (error) -> done error
 
   it 'should process a list of elements sequentially (accumulate false)', (done) ->
     count = 1
@@ -38,7 +37,7 @@ describe 'Qutils', ->
     .then (results) ->
       expect(results).toEqual []
       done()
-    .fail (error) -> done _.prettify error
+    .fail (error) -> done error
 
   it 'should reject if processed promise fails', (done) ->
     Qutils.processList [1..5], (i) -> Q.reject('Oops')
