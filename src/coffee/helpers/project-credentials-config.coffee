@@ -54,7 +54,7 @@ class ProjectCredentialsConfig
       fsExistsAsync normalizedPath
       .then (exists) =>
         if exists
-          fs.readFileAsync normalizedPath
+          fs.readFileAsync normalizedPath, {encoding: 'utf-8'}
           .then (contents) =>
             if _.endsWith(normalizedPath, '.json')
               @_readJsonConfig "#{contents}"
