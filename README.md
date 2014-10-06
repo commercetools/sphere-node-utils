@@ -21,12 +21,6 @@ This module shares helpers among all [SPHERE.IO](http://sphere.io/) Node.js comp
     * [ElasticIo](#elasticio)
   * [Mixins](#mixins)
     * [Qutils](#qutils)
-    * [Underscore](#underscore)
-      * [_.deepClone](#_deepclone)
-      * [_.prettify](#_prettify)
-      * [_.percentage](#_percentage)
-      * [_.stringifyQuery](#_stringifyquery)
-      * [_.parseQuery](#_parsequery)
 * [Examples](#examples)
 * [Releasing](#releasing)
 * [License](#license)
@@ -38,13 +32,10 @@ This module shares helpers among all [SPHERE.IO](http://sphere.io/) Node.js comp
 SphereUtils = require 'sphere-node-utils'
 Logger = SphereUtils.Logger
 TaskQueue = SphereUtils.TaskQueue
-Sftp = SphereUtils.Sftp
-ProjectCredentialsConfig = SphereUtils.ProjectCredentialsConfig
-ElasticIo = SphereUtils.ElasticIo
-_u = SphereUtils._u
+...
 
 # or
-{Logger, TaskQueue, Sftp, ProjectCredentialsConfig, ElasticIo, _u} = require 'sphere-node-utils'
+{Logger, TaskQueue, ...} = require 'sphere-node-utils'
 ```
 
 ## Documentation
@@ -53,6 +44,7 @@ _u = SphereUtils._u
 Currently following helpers are provided by `SphereUtils`:
 
 - `Logger`
+- `ExtendedLogger`
 - `TaskQueue`
 - `Sftp`
 - `ProjectCredentialsConfig`
@@ -173,15 +165,14 @@ A `TaskQueue` allows you to queue promises (or function that return promises) wh
 {TaskQueue} = require 'sphere-node-utils'
 
 callMe = ->
-  d = Q.defer()
-  setTimeout ->
-    d.resolve true
-  , 5000
-  d.promise
+  new Promise (resolve, reject) ->
+    setTimeout ->
+      resolve true
+    , 5000
 task = new TaskQueue maxParallel: 50 # default 20
 task.addTask callMe
 .then (result) -> # result == true
-.fail (error) ->
+.catch (error) ->
 ```
 
 Available methods:
@@ -191,27 +182,27 @@ Available methods:
 #### Sftp
 Provides promised based wrapped functionalities for some `SFTP` methods
 
-- `listFiles` TBD
-- `stats` TBD
+- `listFiles`
+- `stats`
 - `readFile` _not implemented yet_
 - `saveFile` _not implemented yet_
-- `getFile` TBD
-- `putFile` TBD
-- `safePutFile` TBD
-- `renameFile` TBD
-- `safeRenameFile` TBD
-- `removeFile` TBD
-- `openSftp` TBD
-- `close` TBD
-- `downloadAllFiles` TBD
+- `getFile`
+- `putFile`
+- `safePutFile`
+- `renameFile`
+- `safeRenameFile`
+- `removeFile`
+- `openSftp`
+- `close`
+- `downloadAllFiles`
 
-> The client using the `Sftp` helper should take care of how to send requests to manage remote files. E.g.: multiple concurrency requests to rename a file should be done sequentially to avoid problems (use `Qutils.processList`)
+> The client using the `Sftp` helper should take care of how to send requests to manage remote files, by controlling e.g. concurrency via `TaskQueue` and/or functions of `Bluebird` promise [API](https://github.com/petkaantonov/bluebird/blob/master/API.md)
 
 
 #### ProjectCredentialsConfig
-Provides sphere credentials based on the project key.
+Allows to read SPHERE.IO credentials from a file, based on the `project_key`.
 
-Following files are used to store the credentials and would be searched (descending priority):
+By default the module will try to read the credentials from the following locations (descending priority):
 
 * ./.sphere-project-credentials
 * ./.sphere-project-credentials.json
@@ -224,16 +215,15 @@ Following files are used to store the credentials and would be searched (descend
 _(Coming soon)_
 
 #### Repeater
+Repeater is designed to repeat some arbitrary function unless the execution of this function does not throw any errors
 
- Repeater is designed to repeat some arbitrary function unless the execution of this function does not throw any errors
+Options:
 
- Options:
-
- * **attempts** - Int - how many times execution of the function should be repeated until repeater will give up (default 10)
- * **timeout** - Long - the delay between attempts
- * **timeoutType** - String - The type of the timeout:
-   * `'constant'` - always the same timeout
-   * `'variable'` - timeout grows with the attempts count (it also contains random component)
+* **attempts** - Int - how many times execution of the function should be repeated until repeater will give up (default 10)
+* **timeout** - Long - the delay between attempts
+* **timeoutType** - String - The type of the timeout:
+ * `'constant'` - always the same timeout
+ * `'variable'` - timeout grows with the attempts count (it also contains random component)
 
 Example:
 
@@ -253,14 +243,9 @@ Currently following mixins are provided by `SphereUtils`:
 
 - `Qutils`
   - `processList`
-- `underscore`
-  - `deepClone`
-  - `prettify`
-  - `percentage`
-  - `stringifyQuery`
-  - `parseQuery`
 
 #### Qutils
+> Deprecated in favour of `Bluebird` promises
 A collections of Q utils (promise-based)
 
 ```coffeescript
@@ -286,70 +271,6 @@ You can pass some options as second argument:
 - `accumulate` whether the results should be accumulated or not (default `true`). If not, an empty array will be returned from the resolved promise.
 - `maxParallel` how many elements from the list will be passed to the process `fn` function (default `1`)
 
-#### Underscore
-A collection of methods to be used as `underscore` mixins. To install
-
-```coffeescript
-_ = require 'underscore'
-{_u} = require 'sphere-node-utils'
-_.mixin _u
-
-# or
-_.mixin require('sphere-node-utils')._u
-```
-
-##### `_.deepClone`
-Returns a deep clone of the given object
-
-```coffeescript
-obj = {...} # some object with nested values
-cloned = _.deepClone(obj)
-```
-
-##### `_.prettify`
-Returns a pretty-print formatted JSON string.
-
-```coffeescript
-obj = foo: 'bar'
-pretty = _.prettify(obj) # you can pass the indentation value as optional 2nd argument (default 2)
-# =>
-# "{
-#   "foo": "bar"
-# }"
-```
-
-> If the argument is not a JSON object, the argument itself is returned (also for `Error` instances)
-
-##### `_.percentage`
-Returns the percentage of the given values
-
-```coffeescript
-value = _.percentage(30, 500)
-# => 6
-```
-
-##### `_.stringifyQuery`
-Returns a URL query string from a key-value object
-
-```coffeescript
-params =
-  where: encodeURIComponent('name = "Foo"')
-  staged: true
-  limit: 100
-  offset: 2
-_.stringifyQuery(params)
-# => 'where=name%20%3D%20%22Foo%22&staged=true&limit=100&offset=2'
-```
-
-##### `_.parseQuery`
-Returns a key-value JSON object from a query string
-> Note that all values are parsed as string
-
-```coffeescript
-query = 'where=name%20%3D%20%22Foo%22&staged=true&limit=100&offset=2'
-_.parseQuery(query)
-# => {where: encodeURIComponent('name = "Foo"'), staged: 'true', limit: '100', offset: '2'}
-```
 
 ## Examples
 _(Coming soon)_
