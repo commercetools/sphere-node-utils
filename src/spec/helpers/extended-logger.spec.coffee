@@ -1,5 +1,5 @@
 _ = require 'underscore'
-ExtendedLogger = require '../../lib/helpers/extended-logger'
+{ExtendedLogger} = require '../../lib/main'
 
 describe 'ExtendedLogger', ->
 

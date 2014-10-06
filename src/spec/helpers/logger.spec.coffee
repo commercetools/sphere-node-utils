@@ -1,4 +1,4 @@
-Logger = require '../../lib/helpers/logger'
+{Logger} = require '../../lib/main'
 
 class MyLogger extends Logger
   @appName: 'foo'

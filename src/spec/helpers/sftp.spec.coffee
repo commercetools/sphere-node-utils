@@ -4,7 +4,7 @@ Promise = require 'bluebird'
 fs = Promise.promisifyAll require('fs')
 Connection = require 'ssh2'
 SftpConfig = require('../../config').config.sftp
-SftpHelpers = require '../../lib/helpers/sftp'
+{Sftp} = require '../../lib/main'
 
 fsExistsAsync = (path) ->
   new Promise (resolve, reject) ->
@@ -42,7 +42,7 @@ describe 'SftpHelpers', ->
   FILE_LOCAL_DOWNLOAD = "#{FOLDER_LOCAL}/#{TEST_FILE}"
 
   beforeEach (done) ->
-    @helpers = new SftpHelpers SftpConfig
+    @helpers = new Sftp SftpConfig
     # sftpDisposer = =>
     #   @helpers.openSftp().disposer (sftp) => @helpers.close sftp
     # Promise.using sftpDisposer(), (sftp) =>

@@ -1,4 +1,4 @@
-{Logger, ExtendedLogger, TaskQueue, Sftp, ProjectCredentialsConfig, ElasticIo, Qutils} = require '../lib/main'
+{Logger, ExtendedLogger, TaskQueue, Sftp, ProjectCredentialsConfig, Repeater, ElasticIo, Qutils} = require '../lib/main'
 
 describe 'exports', ->
 
@@ -11,6 +11,8 @@ describe 'exports', ->
   it 'Sftp', -> expect(Sftp).toBeDefined()
 
   it 'ProjectCredentialsConfig', -> expect(ProjectCredentialsConfig).toBeDefined()
+
+  it 'Repeater', -> expect(Repeater).toBeDefined()
 
   it 'ElasticIo', -> expect(ElasticIo).toBeDefined()
 

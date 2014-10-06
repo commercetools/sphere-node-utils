@@ -1,6 +1,6 @@
-Q = require 'q'
 _ = require 'underscore'
-ProjectCredentialsConfig = require '../../lib/helpers/project-credentials-config'
+Promise = require 'bluebird'
+{ProjectCredentialsConfig} = require '../../lib/main'
 
 describe 'ProjectCredentialsConfig', ->
 
@@ -38,8 +38,7 @@ describe 'ProjectCredentialsConfig', ->
         client_id: 'foo1'
         client_secret: 'foo2'
       done()
-    .fail (error) ->
-      done(error)
+    .catch (error) -> done(error)
     .done()
 
   it "should throw an error if credentials are not defined", (done) ->
@@ -48,6 +47,5 @@ describe 'ProjectCredentialsConfig', ->
     .then (config) ->
       expect(-> config.forProjectKey('non-existing-project')).toThrow new Error "Can't find credentials for project 'non-existing-project'."
       done()
-    .fail (error) ->
-      done(error)
+    .catch (error) -> done(error)
     .done()

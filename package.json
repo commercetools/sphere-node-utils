@@ -34,7 +34,6 @@
   },
   "scripts": {
     "build": "grunt build",
-    "postpublish": "rm -rf lib",
     "test": "grunt coverage"
   },
   "dependencies": {
@@ -42,7 +41,6 @@
     "bunyan": "1.1.3",
     "debug": "2.0.0",
     "q": "1.0.x",
-    "q-io": "1.11.x",
     "ssh2": "0.3.6",
     "underscore": "1.7.0",
     "underscore.string": "2.3.3",

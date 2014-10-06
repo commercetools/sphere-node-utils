@@ -1,9 +1,16 @@
-Q = require 'q'
-fs = require 'q-io/fs'
 _ = require 'underscore'
 _.mixin require('underscore.string').exports()
-
 csv = require 'csv'
+Promise = require 'bluebird'
+fs = Promise.promisifyAll require('fs')
+
+fsExistsAsync = (path) ->
+  new Promise (resolve, reject) ->
+    fs.exists path, (exists) ->
+      if exists
+        resolve(true)
+      else
+        resolve(false)
 
 ###*
  * Provides sphere credentials based on the project key.
@@ -38,24 +45,24 @@ class ProjectCredentialsConfig
     @_loadCredentials()
     .then (res) =>
       @_credentials = res
-      this
+      Promise.resolve this
 
   _loadCredentials: ->
     configsP = _.map @_lookupFiles, (path) =>
       normalizedPath = @_normalizePath path
 
-      fs.exists normalizedPath
+      fsExistsAsync normalizedPath
       .then (exists) =>
         if exists
-          fs.read normalizedPath, 'r'
+          fs.readFileAsync normalizedPath
           .then (contents) =>
-            if _.endsWith(normalizedPath, ".json")
+            if _.endsWith(normalizedPath, '.json')
               @_readJsonConfig "#{contents}"
             else
               @_readCsvConfig "#{contents}"
-        else {}
+        else Promise.resolve {}
 
-    Q.all(configsP)
+    Promise.all(configsP)
     .then (configs) ->
       _.reduce configs.reverse(), ((acc, c) -> _.extend(acc, c)), {}
 
@@ -65,22 +72,18 @@ class ProjectCredentialsConfig
     _.each _.keys(config), (key) ->
       config[key].project_key = key
 
-    Q(config)
+    Promise.resolve(config)
 
   _readCsvConfig: (csvText) ->
-    d = Q.defer()
-
-    csv()
-    .from(csvText, {delimiter: ":"})
-    .to.array (data) ->
-      dataJson = _.map data, (row) ->
-        {project_key: row[0], client_id: row[1], client_secret: row[2]}
-
-      d.resolve _.reduce dataJson, ((acc, json) -> acc[json.project_key] = json; acc), {}
-    .on 'error', (error) ->
-      d.reject error
-
-    d.promise
+    new Promise (resolve, reject) ->
+      csv().from(csvText, {delimiter: ":"})
+      .to.array (data) ->
+        dataJson = _.map data, (row) ->
+          {project_key: row[0], client_id: row[1], client_secret: row[2]}
+        resolve _.reduce dataJson, (acc, json) ->
+          acc[json.project_key] = json; acc
+        , {}
+      .on 'error', (error) -> reject error
 
   ###*
    * Returns project credentials for the project key.

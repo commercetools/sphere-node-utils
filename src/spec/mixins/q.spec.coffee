@@ -1,6 +1,6 @@
 Q = require 'q'
 _ = require 'underscore'
-Qutils = require '../../lib/mixins/q'
+{Qutils} = require '../../lib/main'
 
 describe 'Qutils', ->
 

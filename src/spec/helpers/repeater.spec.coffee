@@ -1,8 +1,7 @@
 Q = require 'q'
 _ = require 'underscore'
 _.mixin require('underscore.string').exports()
-
-{Repeater} = require '../../lib/helpers/repeater'
+{Repeater} = require '../../lib/main'
 
 describe 'Repeater', ->
   it 'should repeat task until it returns some successful result', (done) ->
