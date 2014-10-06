@@ -7,6 +7,9 @@ _ = require 'underscore'
 module.exports =
 
   ###*
+   * @deprecated Since we moved to {Bluebird} promises, this is not needed anymore and
+   * this is just for backwards compatibility.
+   *
    * Process each element in the given list using the function fn (called on each iteration).
    * The function fn has to return a promise that should be resolved when all elements of the page are processed.
    * @param {Array} list A list of elements to process
