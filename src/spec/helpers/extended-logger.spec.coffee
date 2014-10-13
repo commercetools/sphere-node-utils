@@ -44,6 +44,35 @@ describe 'ExtendedLogger', ->
         @log[level] 'Some message', 'Oops, something went wrong'
         expect(@log.bunyanLogger[level]).toHaveBeenCalledWith {data: 'Some message', project_key: 'foo', another_field: 'bar'}, 'Oops, something went wrong'
 
+      it "should log (#{level}) by serializing Error", ->
+        spyOn(@log.bunyanLogger, level)
+        @log[level] (new Error 'Oops'), 'Oops, something went wrong'
+        expect(@log.bunyanLogger[level]).toHaveBeenCalledWith
+          data:
+            message: 'Oops'
+            name: 'Error'
+            stack: jasmine.any(String)
+            code: undefined
+            signal: undefined
+          project_key: 'foo'
+          another_field: 'bar'
+        , 'Oops, something went wrong'
+
+      it "should log (#{level}) by serializing Error 2", ->
+        spyOn(@log.bunyanLogger, level)
+        @log[level] {err: (new Error 'Oops')}, 'Oops, something went wrong'
+        expect(@log.bunyanLogger[level]).toHaveBeenCalledWith
+          data:
+            err:
+              message: 'Oops'
+              name: 'Error'
+              stack: jasmine.any(String)
+              code: undefined
+              signal: undefined
+          project_key: 'foo'
+          another_field: 'bar'
+        , 'Oops, something went wrong'
+
   describe ':: withField', ->
 
     _.each ['trace', 'debug', 'info', 'warn', 'error', 'fatal'], (level) ->
