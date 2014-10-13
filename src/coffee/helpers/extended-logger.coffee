@@ -13,10 +13,23 @@ module.exports = class
     @tmpAdditionalFields = {}
     @bunyanLogger = new Logger logConfig
 
+  _serializeError: (e) ->
+    message: e.message
+    name: e.name
+    stack: e.stack
+    code: e.code
+    signal: e.signal
+
   _wrapOptions: (type, opts, msg) ->
     if not msg and _.isString opts
       msg = opts
       opts = {}
+    # serialize Errors
+    if opts instanceof Error
+      opts = @_serializeError(opts)
+    else if opts?.err instanceof Error # logger.error {err: e}
+      opts.err = @_serializeError(opts.err)
+
     wrappedData =
       data: opts
     _.extend wrappedData, @additionalFields, @tmpAdditionalFields

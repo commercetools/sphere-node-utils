@@ -246,6 +246,7 @@ Currently following mixins are provided by `SphereUtils`:
 
 #### Qutils
 > Deprecated in favour of `Bluebird` promises
+
 A collections of Q utils (promise-based)
 
 ```coffeescript
