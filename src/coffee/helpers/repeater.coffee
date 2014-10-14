@@ -1,64 +1,96 @@
-Q = require 'q'
+debug = require('debug')('repeater')
 _ = require 'underscore'
+Promise = require 'bluebird'
 
 ###*
- * Repeater is designed to repeat some arbitrary function unless the execution of this function does not throw any errors
+ * A new Repeater instance
+ * @class Repeater
  *
- * Options:
- *   attempts - Int - how many times execution of the function should be repeated until repeater will give up (default 10)
- *   timeout - Long - the delay between attempts
- *   timeoutType - String - The type of the timeout:
- *     'constant' - always the same timeout
- *     'variable' - timeout grows with the attempts count (it also contains random component)
+ * A Repeater allows to execute a promise and recover from it in case of errors,
+ * by retrying to execute the task for a certain number of times before giving up.
 ###
 class Repeater
-  constructor: (options = {}) ->
-    @_attempts = if options.attempts? then options.attempts else 10
-    @_timeout = if options.timeout? then options.timeout else 100
-    @_timeoutType = options.timeoutType or 'variable'
 
   ###*
-   * Executes arbitrary function
-   *
-   * Options:
-   *   task - () => Promise[Any] - the task that should be executed
-   *   recoverableError - Error => Boolean - function that decides, whether an error can be recovered by repeating the task execution
+   * Initialize the class
+   * @constructor
+   * @param {Object} [options] A JSON object containing configuration options
+   * - `attempts` how many times it should retry
+   * - `timeout` delay before retrying
+   * - `timeoutType`
+   *   - `c`: constant delay
+   *   - `v`: variable delay (grows with attempts count with a random component)
   ###
-  execute: (options) ->
-    throw new Error '`task` function is undefined' unless _.isFunction(options.task)
-    throw new Error '`recoverableError` function is undefined' unless _.isFunction(options.recoverableError)
+  constructor: (options = {}) ->
+    @_options = _.defaults options,
+      attempts: 10
+      timeout: 100
+      timeoutType: 'c'
+    debug 'new Repeater with options: %j', @_options
 
-    d = Q.defer()
+  ###*
+   * Resolves the {Promise} defined in the `task` function, allowing to
+   * recover it from arbitrary errors via the `recover` function.
+   * @param  {Promise} task The promise that needs to be resolved
+   * @param  {Function} recover A function that is called with the `error` object
+   *                            if the `task` promise failed, returning a new {Promise}
+   * @return {Promise} A Promise, fulfilled with the resolved `task`, or rejected with an error
+  ###
+  execute: (task, recover) ->
+    new Promise (resolve, reject) =>
+      @_repeat
+        task: task
+        recover: recover
+        defer:
+          resolve: resolve
+          reject: reject
+        remainingAttempts: @_options.attempts
+        lastError: null
 
-    @_repeat(@_attempts, options, d, null)
+  ###*
+   * @private
+   * The function that handles the retrying, calling itself recursively
+   * @param  {Object} opts The options used for retrying the {Promise}
+  ###
+  _repeat: (opts) ->
+    {task, recover, defer, remainingAttempts, lastError} = opts
 
-    d.promise
-
-  _repeat: (remainingAttempts, options, defer, lastError) ->
-    {task, recoverableError} = options
-
+    debug '(re)-trying task, %d remaining attempts', remainingAttempts
     if remainingAttempts is 0
-      defer.reject new Error("Unsuccessful after #{@_attempts} attempts. Cause: #{lastError.stack}")
+      defer.reject new Error "Failed to retry the task after #{@_options.attempts} attempts. Cause: #{lastError.stack}"
     else
       task()
-      .then (res) ->
-        defer.resolve res
-      .fail (e) =>
-        if recoverableError(e)
-          Q.delay @_calculateDelay(remainingAttempts)
-          .then (i) =>
-            @_repeat(remainingAttempts - 1, options, defer, e)
-        else
-          defer.reject e
+      .then (r) -> defer.resolve r
+      .catch (e) =>
+        debug 'uh got an error, about to recover: %o', e
+        recover e
+        .then (newTask) =>
+          recoverDelay = @_calculateDelay(remainingAttempts)
+          debug 'will recover after %d delay', recoverDelay
+          Promise.delay recoverDelay
+          .then =>
+            debug 'about to recover'
+            @_repeat
+              task: newTask or task
+              recover: recover
+              defer: defer
+              remainingAttempts: remainingAttempts - 1
+              lastError: e
+        .catch (e) -> defer.reject e
       .done()
 
+  ###*
+   * @private
+   * Calculate the delay between attempts based on the `timeoutType`
+   * @param  {Number} attemptsLeft How many attempts are left before giving up
+   * @return {Number} The calculated delay
+  ###
   _calculateDelay: (attemptsLeft) ->
-    if @_timeoutType is 'constant'
-      @_timeout
-    else if @_timeoutType is 'variable'
-      tried = @_attempts - attemptsLeft - 1
-      (@_timeout * tried) + _.random(50, @_timeout)
-    else
-      throw new Error("Unsupported timeout type: #{@_timeoutType}")
+    switch @_options.timeoutType
+      when 'v'
+        tried = @_options.attempts - attemptsLeft - 1
+        tried = 0 if tried < 0
+        (@_options.timeout * tried) + _.random(50, @_options.timeout)
+      else @_options.timeout
 
-exports.Repeater = Repeater
+module.exports = Repeater

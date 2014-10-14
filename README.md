@@ -215,27 +215,44 @@ By default the module will try to read the credentials from the following locati
 _(Coming soon)_
 
 #### Repeater
-Repeater is designed to repeat some arbitrary function unless the execution of this function does not throw any errors
+A Repeater allows to execute a promise function and recover from it in case of errors, for a certain number of times before giving up.
 
-Options:
+> By default the initial task will be retried unless a new task is returned from the recover function (see example below).
 
-* **attempts** - Int - how many times execution of the function should be repeated until repeater will give up (default 10)
-* **timeout** - Long - the delay between attempts
-* **timeoutType** - String - The type of the timeout:
- * `'constant'` - always the same timeout
- * `'variable'` - timeout grows with the attempts count (it also contains random component)
+The only method exposed is `execute`, which accepts 2 arguments:
+- task: a `Function` that returns a Promise
+- recover: a `Function` that returns a Promise, called when the task fails
 
-Example:
+Following options are supported when initializing a new `Repeater`:
+- `attempts` (Int) how many times the task should be repeated, if failed, before giving up (**default 10**)
+- `timeout` (Int) the delay between attempts before retrying, in `ms` (**default 100**)
+- `timeoutType` (String) the type of the timeout (**default c**)
+  - `c` _constant delay_ always the same timeout
+  - `v` _variable delay_ timeout grows with the attempts count (also using a random component)
 
 ```coffeescript
+client = new SphereClient {...}
 repeater = new Repeater {attempts: 10}
 
-repeater.execute
-  recoverableError: (e) -> e instanceof ErrorStatusCode and e.code is 409
-  task: ->
-    console.info("get some stuff..")
-    console.info("update some another things...")
-    Q("Done")
+updateTask = (payload) -> client.products.byId(productId).update(payload)
+repeater.execute ->
+  updateTask(payload)
+, (e) ->
+  if e.statusCode is 409
+    # this means a concurrent modification, so we retry to update with
+    # a new task by retrieving a new product version first
+    newTask = -> # task must be a function
+      client.productProjections.staged(true).byId(productId).fetch()
+      .then (result) ->
+        newPayload = _.extend payload, {version: result.body.version}
+        updateTask(newPayload)
+    # now we must resolve the recover function with the new task
+    # If we just want to retry the initial task then simply resolve an empty promise
+    # Promise.resolve()
+    Promise.resolve newTask
+  else
+    # we should not retry in this case, so simply bubble up the error
+    Promise.reject e
 ```
 
 ### Mixins
