@@ -42,7 +42,7 @@ describe 'SftpHelpers', ->
   FILE_LOCAL_DOWNLOAD = "#{FOLDER_LOCAL}/#{TEST_FILE}"
 
   beforeEach (done) ->
-    @helpers = new Sftp SftpConfig
+    @helpers = new Sftp _.extend({}, SftpConfig, debug: false)
     # sftpDisposer = =>
     #   @helpers.openSftp().disposer (sftp) => @helpers.close sftp
     # Promise.using sftpDisposer(), (sftp) =>
@@ -69,7 +69,7 @@ describe 'SftpHelpers', ->
       debug 'files to be removed: %j', files
       Promise.all _.filter(files, (f) ->
         switch f.filename
-          when '.', '..' then false
+          when '.', '..', 'processed' then false
           else true
       ).map (f) =>
         debug "About to remove #{f.filename}"
@@ -142,6 +142,19 @@ describe 'SftpHelpers', ->
     .then (stat) =>
       expect(stat.isFile()).toBe true
       @helpers.removeFile @_sftp, FILE_REMOTE_RENAMED
+    .then -> done()
+    .catch (error) -> done(error)
+    .done()
+
+  it 'should safely move a file to a subfolder on remote server', (done) ->
+    fileRemote2 = "#{FOLDER_REMOTE}/test2.txt"
+    dirFileRemote2Renamed = "#{FOLDER_REMOTE}/processed/renamed-#{TEST_FILE}"
+    @helpers.putFile @_sftp, FILE_LOCAL, fileRemote2
+    .then => @helpers.safeRenameFile @_sftp, fileRemote2, dirFileRemote2Renamed
+    .then => @helpers.stats @_sftp, dirFileRemote2Renamed
+    .then (stat) =>
+      expect(stat.isFile()).toBe true
+      @helpers.removeFile @_sftp, dirFileRemote2Renamed
     .then -> done()
     .catch (error) -> done(error)
     .done()

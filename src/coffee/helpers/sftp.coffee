@@ -174,8 +174,12 @@ class Sftp
           Promise.reject err
       else
         Promise.reject "The resource at #{destPath} already exist and it doesn't appear to be a file. Please check that what you want to rename is a file."
-    .catch => @renameFile(sftp, srcPath, destPath)
-
+    .catch (err) =>
+      if err.message is 'No such file'
+        debug "File #{destPath} doesn't exist, about to rename it"
+        @renameFile(sftp, srcPath, destPath)
+      else
+        Promise.reject err
 
   ###*
    * Remove remote file
