@@ -1,5 +1,5 @@
 _ = require 'underscore'
-_.mixin require('underscore.string').exports()
+_s = require 'underscore.string'
 csv = require 'csv'
 Promise = require 'bluebird'
 fs = Promise.promisifyAll require('fs')
@@ -56,7 +56,7 @@ class ProjectCredentialsConfig
         if exists
           fs.readFileAsync normalizedPath, {encoding: 'utf-8'}
           .then (contents) =>
-            if _.endsWith(normalizedPath, '.json')
+            if _s.endsWith(normalizedPath, '.json')
               @_readJsonConfig "#{contents}"
             else
               @_readCsvConfig "#{contents}"
@@ -110,7 +110,7 @@ class ProjectCredentialsConfig
         throw new Error("Can't find credentials for project '#{credentials.project_key}'.")
 
   _normalizePath: (path) ->
-    if not path? or _.isBlank(path)
+    if not path? or _s.isBlank(path)
       throw new Error('Path is empty!')
 
     path.replace "~", @_getUserHome()
