@@ -224,6 +224,8 @@ class Sftp
         host: @_options.host
         username: @_options.username
         password: @_options.password
+      if @_options.port
+        connectOpts['port'] = @_options.port
       if @_options.debug
         connectOpts['debug'] = (msg) -> debug msg
       @conn.connect connectOpts
