@@ -1,7 +1,7 @@
 {
   "name": "sphere-node-utils",
   "description": "Helpers to share among all SPHERE.IO node components.",
-  "version": "0.7.0",
+  "version": "0.7.2",
   "homepage": "https://github.com/sphereio/sphere-node-utils",
   "private": false,
   "author": {
@@ -34,7 +34,8 @@
   },
   "scripts": {
     "build": "grunt build",
-    "test": "grunt coverage"
+    "test": "grunt coverage",
+    "release": "grunt release"
   },
   "dependencies": {
     "bluebird": "2.9.32",
