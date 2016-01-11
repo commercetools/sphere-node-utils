@@ -224,7 +224,7 @@ credentialsConfig._init()
  sphereCredentials = credentialsConfig.forProjectKey(PROJECT_KEY)
  // got the credentials
  // do something with them e.g. intialize the SphereClient from the node-sdk
- sphereClient = new SphereClient(sphereCredentials)
+ sphereClient = new SphereClient({ config: sphereCredentials })
 })
 ```
 
