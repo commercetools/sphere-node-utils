@@ -232,6 +232,7 @@ ProjectCredentialsConfig.create()
   // do something with them e.g. intialize the SphereClient from the node-sdk
   sphereClient = new SphereClient({ config: sphereCredentials })
 })
+```
 
 ##### From environment variables
 
