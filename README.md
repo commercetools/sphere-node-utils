@@ -211,6 +211,23 @@ By default the module will try to read the credentials from the following locati
 * /etc/sphere-project-credentials
 * /etc/sphere-project-credentials.json
 
+Example usage:
+```js
+import { SphereClient } from 'sphere-node-sdk'
+import { ProjectCredentialsConfig } from 'sphere-node-utils'
+
+const PROJECT_KEY = 'your-project-key'
+
+credentialsConfig = new ProjectCredentialsConfig()
+credentialsConfig._init()
+.then(() => {
+ sphereCredentials = credentialsConfig.forProjectKey(PROJECT_KEY)
+ // got the credentials
+ // do something with them e.g. intialize the SphereClient from the node-sdk
+ sphereClient = new SphereClient(sphereCredentials)
+})
+```
+
 #### ElasticIo
 _(Coming soon)_
 
