@@ -200,7 +200,9 @@ Provides promised based wrapped functionalities for some `SFTP` methods
 
 
 #### ProjectCredentialsConfig
-Allows to read SPHERE.IO credentials from a file, based on the `project_key`.
+Allows to read SPHERE.IO credentials from a file or via environment variables, based on the `project_key`.
+
+##### From a file
 
 By default the module will try to read the credentials from the following locations (descending priority):
 
@@ -230,6 +232,16 @@ ProjectCredentialsConfig.create()
   // do something with them e.g. intialize the SphereClient from the node-sdk
   sphereClient = new SphereClient({ config: sphereCredentials })
 })
+
+##### From environment variables
+
+This is a little bit more restricted, since you can only define one set of credentials with the environment variables. Nevertheless this is very useful for deployments, where you really only need one set of credentials per deployment.
+You can define your credentials using these variables:
+
+```sh
+export CTP_PROJECT_KEY="your-project-key"
+export CTP_CLIENT_ID="your-client-id"
+export CTP_CLIENT_SECRET="your-client-secret"
 ```
 
 #### ElasticIo
