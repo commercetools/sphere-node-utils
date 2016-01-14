@@ -244,26 +244,6 @@ export SPHERE_CLIENT_ID="your-client-id"
 export SPHERE_CLIENT_SECRET="your-client-secret"
 ```
 
-Example usage:
-```js
-import { SphereClient } from 'sphere-node-sdk'
-import { ProjectCredentialsConfig } from 'sphere-node-utils'
-
-const PROJECT_KEY = 'your-project-key'
-
-ProjectCredentialsConfig.create()
-.then((credentials) =>{
-  sphereCredentials = credentials.enrichCredentials({
-   project_key: PROJECT_KEY,
-   // you can pass some fallback options aswell here
-   client_id: argv.clientId,
-   client_secret: argv.clientSecret,
-  })
-  // got the credentials
-  // do something with them e.g. intialize the SphereClient from the node-sdk
-  sphereClient = new SphereClient({ config: sphereCredentials })
-})
-
 #### ElasticIo
 _(Coming soon)_
 
