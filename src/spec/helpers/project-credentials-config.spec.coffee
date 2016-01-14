@@ -1,6 +1,6 @@
 _ = require 'underscore'
 Promise = require 'bluebird'
-{ProjectCredentialsConfig} = require '../../lib/main'
+{ProjectCredentialsConfig} = require '../../../lib/main'
 
 describe 'ProjectCredentialsConfig', ->
 
@@ -40,6 +40,23 @@ describe 'ProjectCredentialsConfig', ->
       done()
     .catch (error) -> done(error)
     .done()
+
+  it "should load credentials from environment variables", (done) ->
+    process.env.CTP_PROJECT_KEY = 'project-key'
+    process.env.CTP_CLIENT_ID = 'client-id'
+    process.env.CTP_CLIENT_SECRET = 'client-secret'
+
+    ProjectCredentialsConfig.create()
+    .then (config) ->
+      actual = config.forProjectKey('project-key')
+      expected = {
+        project_key: 'project-key'
+        client_id: 'client-id'
+        client_secret: 'client-secret'
+      }
+      expect(actual).toEqual(expected)
+      done()
+    .catch (err) -> done(err)
 
   it "should throw an error if credentials are not defined", (done) ->
     ProjectCredentialsConfig.create
