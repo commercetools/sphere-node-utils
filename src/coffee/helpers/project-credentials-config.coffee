@@ -88,13 +88,16 @@ class ProjectCredentialsConfig
       .on 'error', (error) -> reject error
 
   _getEnvCredetials: ->
-    projectKey = process.env.CTP_PROJECT_KEY
-    if projectKey
+    envVars = _.pick(
+      process.env,
+      'SPHERE_PROJECT_KEY', 'SPHERE_CLIENT_ID', 'SPHERE_CLIENT_SECRET'
+    )
+    if (_.values(envVars).length == 3)
       return {
-        "#{projectKey}":
-          project_key: process.env.CTP_PROJECT_KEY
-          client_id: process.env.CTP_CLIENT_ID
-          client_secret: process.env.CTP_CLIENT_SECRET
+        "#{envVars.SPHERE_PROJECT_KEY}":
+          project_key: envVars.SPHERE_PROJECT_KEY,
+          client_id: envVars.SPHERE_CLIENT_ID,
+          client_secret: envVars.SPHERE_CLIENT_SECRET
       }
 
   ###*

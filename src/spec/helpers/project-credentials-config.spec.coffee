@@ -42,9 +42,9 @@ describe 'ProjectCredentialsConfig', ->
     .done()
 
   it "should load credentials from environment variables", (done) ->
-    process.env.CTP_PROJECT_KEY = 'project-key'
-    process.env.CTP_CLIENT_ID = 'client-id'
-    process.env.CTP_CLIENT_SECRET = 'client-secret'
+    process.env.SPHERE_PROJECT_KEY = 'project-key'
+    process.env.SPHERE_CLIENT_ID = 'client-id'
+    process.env.SPHERE_CLIENT_SECRET = 'client-secret'
 
     ProjectCredentialsConfig.create()
     .then (config) ->
