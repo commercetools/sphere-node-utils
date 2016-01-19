@@ -239,9 +239,9 @@ This is a little bit more restricted, since you can only define one set of crede
 You can define your credentials using these variables:
 
 ```sh
-export CTP_PROJECT_KEY="your-project-key"
-export CTP_CLIENT_ID="your-client-id"
-export CTP_CLIENT_SECRET="your-client-secret"
+export SPHERE_PROJECT_KEY="your-project-key"
+export SPHERE_CLIENT_ID="your-client-id"
+export SPHERE_CLIENT_SECRET="your-client-secret"
 ```
 
 #### ElasticIo
