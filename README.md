@@ -251,13 +251,17 @@ import { ProjectCredentialsConfig } from 'sphere-node-utils'
 
 const PROJECT_KEY = 'your-project-key'
 
-credentialsConfig = new ProjectCredentialsConfig()
-credentialsConfig._init()
-.then(() => {
- sphereCredentials = credentialsConfig.forProjectKey(PROJECT_KEY)
- // got the credentials
- // do something with them e.g. intialize the SphereClient from the node-sdk
- sphereClient = new SphereClient({ config: sphereCredentials })
+ProjectCredentialsConfig.create()
+.then((credentials) =>{
+  sphereCredentials = credentials.enrichCredentials({
+   project_key: PROJECT_KEY,
+   // you can pass some fallback options aswell here
+   client_id: argv.clientId,
+   client_secret: argv.clientSecret,
+  })
+  // got the credentials
+  // do something with them e.g. intialize the SphereClient from the node-sdk
+  sphereClient = new SphereClient({ config: sphereCredentials })
 })
 
 #### ElasticIo
