@@ -62,6 +62,8 @@ class ProjectCredentialsConfig
               @_readCsvConfig "#{contents}"
         else Promise.resolve {}
 
+    configsP.push(@_getEnvCredetials())
+
     Promise.all(configsP)
     .then (configs) ->
       _.reduce configs.reverse(), ((acc, c) -> _.extend(acc, c)), {}
@@ -84,6 +86,19 @@ class ProjectCredentialsConfig
           acc[json.project_key] = json; acc
         , {}
       .on 'error', (error) -> reject error
+
+  _getEnvCredetials: ->
+    envVars = _.pick(
+      process.env,
+      'SPHERE_PROJECT_KEY', 'SPHERE_CLIENT_ID', 'SPHERE_CLIENT_SECRET'
+    )
+    if (_.values(envVars).length == 3)
+      return {
+        "#{envVars.SPHERE_PROJECT_KEY}":
+          project_key: envVars.SPHERE_PROJECT_KEY,
+          client_id: envVars.SPHERE_CLIENT_ID,
+          client_secret: envVars.SPHERE_CLIENT_SECRET
+      }
 
   ###*
    * Returns project credentials for the project key.
