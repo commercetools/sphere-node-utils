@@ -14,10 +14,12 @@ module.exports = class
     @bunyanLogger = new Logger logConfig
 
   _serializeError: (e) ->
+    body: e.body
     message: e.message
     name: e.name
     stack: e.stack
     code: e.code
+    statusCode: e.statusCode
     signal: e.signal
 
   _wrapOptions: (type, opts, msg) ->
