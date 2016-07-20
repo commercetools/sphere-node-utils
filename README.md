@@ -213,6 +213,28 @@ By default the module will try to read the credentials from the following locati
 * /etc/sphere-project-credentials
 * /etc/sphere-project-credentials.json
 
+
+Example usage:
+```js
+import { SphereClient } from 'sphere-node-sdk'
+import { ProjectCredentialsConfig } from 'sphere-node-utils'
+
+const PROJECT_KEY = 'your-project-key'
+
+ProjectCredentialsConfig.create()
+.then((credentials) =>{
+  const sphereCredentials = credentials.enrichCredentials({
+   project_key: PROJECT_KEY,
+   // you can pass some fallback options as well here
+   client_id: argv.clientId,
+   client_secret: argv.clientSecret,
+  })
+  // got the credentials
+  // do something with them e.g. initialize the SphereClient from the node-sdk
+  const sphereClient = new SphereClient({ config: sphereCredentials })
+})
+```
+
 ##### From environment variables
 
 This is a little bit more restricted, since you can only define one set of credentials with the environment variables. Nevertheless this is very useful for deployments, where you really only need one set of credentials per deployment.

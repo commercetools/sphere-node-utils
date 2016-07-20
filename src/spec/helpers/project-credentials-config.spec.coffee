@@ -1,6 +1,6 @@
 _ = require 'underscore'
 Promise = require 'bluebird'
-{ProjectCredentialsConfig} = require '../../lib/main'
+{ProjectCredentialsConfig} = require '../../../lib/main'
 
 describe 'ProjectCredentialsConfig', ->
 
