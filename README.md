@@ -216,16 +216,22 @@ By default the module will try to read the credentials from the following locati
 The versions of these without the `.json` extension consist of a series of lines, each of which contains a project key, client ID and client secret, separated by colons:
 
 ```
-project-key1:client-id1:client-secret1
-project-key2:client-id2:client-secret2
+<project-key1>:<client-id1>:<client-secret1>
+<project-key2>:<client-id2>:<client-secret2>
 ```
 
 The JSON versions are structured as follows:
 
 ```
 {
-  "project-key1": { "client_id":"client-id1", "client_secret":"client-secret1" },
-  "project-key2": { "client_id":"client-id2", "client_secret":"client-secret2" }
+  "<project-key1>": {
+    "client_id":"<client-id1>",
+    "client_secret":"<client-secret1>"
+  },
+  "<project-key2>": {
+    "client_id":"<client-id2>",
+    "client_secret":"<client-secret2>"
+  }
 }
 ```
 
