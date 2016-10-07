@@ -257,13 +257,16 @@ class Sftp
           switch f.filename
             when '.', '..' then false
             else regex.test(f.filename)
-        Promise.all _.map filteredFiles, (f) => @stats(sftp, "#{remoteFolder}/#{f.filename}")
+        Promise.map filteredFiles, ((f) =>
+          @stats(sftp, "#{remoteFolder}/#{f.filename}")),
+          concurrency: 3
         .then (stats) =>
           filesOnly = []
           _.each filteredFiles, (f, i) -> filesOnly.push(f) if stats[i].isFile() # here magic happens!
           debug filesOnly, "About to download"
-          Promise.all _.map filesOnly, (f) =>
-            @getFile(sftp, "#{remoteFolder}/#{f.filename}", "#{tmpFolder}/#{f.filename}")
+          Promise.map filesOnly, ((f) =>
+            @getFile(sftp, "#{remoteFolder}/#{f.filename}", "#{tmpFolder}/#{f.filename}")),
+            concurrency: 3
         .then -> resolve()
       .catch (error) -> reject error
 
