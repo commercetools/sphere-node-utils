@@ -19,7 +19,7 @@ class Sftp
   listFiles: (sftp, dirName) ->
     new Promise (resolve, reject) ->
       sftp.readdir dirName, (err, list) ->
-        if err?
+        if err
           reject err
         else
           resolve list
