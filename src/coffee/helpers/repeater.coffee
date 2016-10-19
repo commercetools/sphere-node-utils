@@ -57,7 +57,9 @@ class Repeater
 
     debug '(re)-trying task, %d remaining attempts', remainingAttempts
     if remainingAttempts is 0
-      defer.reject new Error "Failed to retry the task after #{@_options.attempts} attempts. Cause: #{lastError.stack}"
+      defer.reject
+        message: "Failed to retry the task after #{@_options.attempts} attempts."
+        error: lastError
     else
       task()
       .then (r) -> defer.resolve r
