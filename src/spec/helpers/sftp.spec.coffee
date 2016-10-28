@@ -107,7 +107,7 @@ describe 'SftpHelpers', ->
     .then =>
       @helpers.listFiles(@_sftp, FOLDER_REMOTE)
     .then (files) ->
-      expect(_.size files).toEqual 100
+      expect(_.size files).toBeGreaterThan 100
       done()
     .catch (error) -> done(error)
   , 30000 # 30sec
