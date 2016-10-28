@@ -87,5 +87,9 @@ describe 'Repeater', ->
     .then -> done 'It should have failed'
     .catch (error) ->
       expect(repeated).toEqual 3
-      expect(_.startsWith(error.message, 'Failed to retry the task after 3 attempts')).toBe true
+      expected = {
+        message: 'Failed to retry the task after 3 attempts.',
+        error: new Error('foo')
+      }
+      expect(error).toEqual(expected)
       done()

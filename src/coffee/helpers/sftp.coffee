@@ -237,9 +237,10 @@ class Sftp
    * @param {String} tmpFolder Local tmp folder path where to save the files to
    * @param {String} remoteFolder Remote path folder where to download the files from
    * @param {String} [fileRegex] A RegExp to be applied when filtering files
+   * @param {Number} [maxConcurrency=3] maximum number of concurrent downloads from SFTP
    * @return {Promise} A promise, fulfilled with an {Object} or rejected with an error
   ###
-  downloadAllFiles: (sftp, tmpFolder, remoteFolder, fileRegex = '') ->
+  downloadAllFiles: (sftp, tmpFolder, remoteFolder, fileRegex = '', maxConcurrency = 3) ->
     new Promise (resolve, reject) =>
       @listFiles(sftp, remoteFolder)
       .then (files) =>
@@ -249,13 +250,16 @@ class Sftp
           switch f.filename
             when '.', '..' then false
             else regex.test(f.filename)
-        Promise.all _.map filteredFiles, (f) => @stats(sftp, "#{remoteFolder}/#{f.filename}")
+        Promise.map filteredFiles, ((f) =>
+          @stats(sftp, "#{remoteFolder}/#{f.filename}")),
+          concurrency: maxConcurrency
         .then (stats) =>
           filesOnly = []
           _.each filteredFiles, (f, i) -> filesOnly.push(f) if stats[i].isFile() # here magic happens!
           debug filesOnly, "About to download"
-          Promise.all _.map filesOnly, (f) =>
-            @getFile(sftp, "#{remoteFolder}/#{f.filename}", "#{tmpFolder}/#{f.filename}")
+          Promise.map filesOnly, ((f) =>
+            @getFile(sftp, "#{remoteFolder}/#{f.filename}", "#{tmpFolder}/#{f.filename}")),
+            concurrency: maxConcurrency
         .then -> resolve()
       .catch (error) -> reject error
 
