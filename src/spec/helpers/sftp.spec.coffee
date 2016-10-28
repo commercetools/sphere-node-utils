@@ -105,7 +105,7 @@ describe 'SftpHelpers', ->
       @helpers.safePutFile @_sftp, FILE_LOCAL, FOLDER_REMOTE + "/test#{i}.txt"
     , {concurrency: 5}
     .then =>
-      @_sftp.listFiles @_sftp, FOLDER_REMOTE
+      @helpers.listFiles(@_sftp, FOLDER_REMOTE)
     .then (files) ->
       expect(_.size files).toEqual 100
       done()
