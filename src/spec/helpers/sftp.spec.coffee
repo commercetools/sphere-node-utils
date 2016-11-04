@@ -100,6 +100,18 @@ describe 'SftpHelpers', ->
     .catch (error) -> done(error)
     .done()
 
+  it 'should list files in large directories', (done) ->
+    Promise.map [1..100], (i) =>
+      @helpers.safePutFile @_sftp, FILE_LOCAL, FOLDER_REMOTE + "/test#{i}.txt"
+    , {concurrency: 5}
+    .then =>
+      @helpers.listFiles(@_sftp, FOLDER_REMOTE)
+    .then (files) ->
+      expect(_.size files).toBeGreaterThan 100
+      done()
+    .catch (error) -> done(error)
+  , 30000 # 30sec
+
   it 'should get file stats', (done) ->
     @helpers.stats(@_sftp, FILE_REMOTE)
     .then (stat) ->

@@ -18,19 +18,11 @@ class Sftp
   ###
   listFiles: (sftp, dirName) ->
     new Promise (resolve, reject) ->
-      sftp.opendir dirName, (err, handle) ->
+      sftp.readdir dirName, (err, list) ->
         if err
           reject err
         else
-          sftp.readdir handle, (err, list) ->
-            if err
-              reject err
-            else
-              if list is false
-                resolve [] # return an empty array
-              else
-                resolve list
-            sftp.close handle
+          resolve list
 
   ###*
    * {@link https://github.com/mscdex/ssh2#stats}
