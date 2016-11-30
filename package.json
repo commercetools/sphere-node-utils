@@ -42,6 +42,8 @@
     "bunyan": "1.8.4",
     "csv": "0.3.7",
     "debug": "2.2.0",
+    "load-module-pkg": "^0.1.0",
+    "load-pkg": "^3.0.1",
     "q": "1.0.x",
     "ssh2": "0.5.2",
     "underscore": "1.8.3",
@@ -62,7 +64,8 @@
     "grunt-shell": "0.7.0",
     "istanbul": "0.3.17",
     "jasmine-node": "1.14.5",
-    "sphere-coffeelint": "sphereio/sphere-coffeelint.git#master"
+    "sphere-coffeelint": "sphereio/sphere-coffeelint.git#master",
+    "sphere-node-sdk": "^1.16.2"
   },
   "keywords": []
 }
