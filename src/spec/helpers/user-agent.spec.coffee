@@ -5,7 +5,7 @@ describe 'UserAgent', ->
 
   it 'should fetch useragent of any installed module', ->
     curPkg = loadPkg.sync(process.cwd())
-    curUserAgent = userAgent('sphere-node-utils')
+    curUserAgent = userAgent('sphere-node-utils', curPkg.version)
     expect(curUserAgent).toBeDefined()
     expect(curUserAgent).toMatch(curPkg.version)
 
