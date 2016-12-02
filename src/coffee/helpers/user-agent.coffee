@@ -8,4 +8,4 @@ module.exports = (pkgName, pkgVersion) =>
   runtimeInfo = "#{platform()}; #{arch()}"
   moduleInfo = "#{pkgName}/#{pkgVersion}"
 
-  "#{sdkPkgVersion} #{nodeInfo} (#{runtimeInfo}) #{moduleInfo}"
+  "node-sdk/#{sdkPkgVersion} #{nodeInfo} (#{runtimeInfo}) #{moduleInfo}"

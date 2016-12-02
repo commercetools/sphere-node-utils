@@ -273,7 +273,7 @@ export SPHERE_CLIENT_SECRET="your-client-secret"
 _(Coming soon)_
 
 #### UserAgent
-A synchronous module that builds _user\_agent_ according to the standard specified [here](https://sphere.atlassian.net/wiki/x/7ACjB)
+A synchronous module that builds _user\_agent_ according to the standard specified by commercetools
 
 sphere-node-sdk module must be installed in the node_modules because it's required to build the user_agent
 
