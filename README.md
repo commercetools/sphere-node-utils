@@ -19,6 +19,7 @@ This module shares helpers among all [SPHERE.IO](http://sphere.io/) Node.js comp
     * [ProjectCredentialsConfig](#projectcredentialsconfig)
     * [Repeater](#repeater)
     * [ElasticIo](#elasticio)
+    * [UserAgent](#useragent)
   * [Mixins](#mixins)
     * [Qutils](#qutils)
 * [Examples](#examples)
@@ -49,6 +50,7 @@ Currently following helpers are provided by `SphereUtils`:
 - `Sftp`
 - `ProjectCredentialsConfig`
 - `ElasticIo`
+- `userAgent`
 - `Repeater`
 
 #### Logger
@@ -269,6 +271,20 @@ export SPHERE_CLIENT_SECRET="your-client-secret"
 
 #### ElasticIo
 _(Coming soon)_
+
+#### UserAgent
+A synchronous module that builds _user\_agent_ according to the standard specified [here](https://sphere.atlassian.net/wiki/x/7ACjB)
+
+sphere-node-sdk module must be installed in the node_modules because it's required to build the user_agent
+
+```js
+const user_agent = userAgent('sphere-node-utils', '1.0.0')
+```
+
+Example of returned user_agent
+```
+1.16.2 Node.js/v6.5.0 (darwin; x64) sphere-node-utils/0.8.6
+```
 
 #### Repeater
 A Repeater allows to execute a promise function and recover from it in case of errors, for a certain number of times before giving up.
