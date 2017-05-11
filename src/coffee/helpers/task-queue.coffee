@@ -17,6 +17,7 @@ class TaskQueue
     @setMaxParallel(maxParallel)
     @_queue = []
     @_activeCount = 0
+    @_completedTasks = []
 
   ###*
    * Set the maxParallel parameter with a custom number.
@@ -49,13 +50,19 @@ class TaskQueue
     @_activeCount += 1
 
     task.fn()
-    .then (res) ->
-      task.resolve res
-    .catch (error) ->
-      task.reject error
+    .then (res) =>
+      # postpone resolving the task
+      @_completedTasks.push(task.resolve.bind(this, res))
+    .catch (error) =>
+      # postpone rejecting the task
+      @_completedTasks.push(task.reject.bind(this, error))
     .finally =>
       @_activeCount -= 1
-      @_maybeExecute()
+      if (@_queue.length == 0 && @_activeCount == 0)
+        # resolve/reject only after all tasks are completed
+        return @_completedTasks.forEach((fn) => fn())
+      else
+        return @_maybeExecute()
     .done()
 
   ###*
