@@ -91,6 +91,6 @@ describe 'TaskQueue', ->
 
     taskPromise
       .then () ->
-        done('Should fail')
+        done('Should be rejected')
       .catch () ->
         done()
