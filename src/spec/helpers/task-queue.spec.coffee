@@ -43,3 +43,54 @@ describe 'TaskQueue', ->
       expect(result).toBe true
       done()
     .catch (error) -> done(error)
+
+  it 'should execute and finish all tasks', (done) ->
+    expectedExecutionOrder = [1, 2, 20, 3, 4]
+    actualExecutionOrder = []
+    actualFinishedTasks = []
+    @task.setMaxParallel 2
+
+    callMe = (input) ->
+      new Promise (resolve) ->
+        actualExecutionOrder.push(input)
+        setTimeout ->
+          actualFinishedTasks.push(input)
+          resolve input
+        , 100 * input
+
+    taskPromise = null
+
+    expectedExecutionOrder.forEach((input, i) =>
+      taskPromise = @task.addTask(callMe.bind(this, input))
+        .then (result) ->
+          expect(result).toBe(expectedExecutionOrder[i])
+    )
+
+    taskPromise
+      .then () ->
+        expect(actualExecutionOrder).toEqual(expectedExecutionOrder)
+        expect(actualFinishedTasks.length).toBe(5)
+        done()
+      .catch (error) -> done(error)
+
+  it 'should reject all when one promise fails', (done) ->
+    callMeResolve = () ->
+      new Promise (resolve) ->
+        setTimeout ->
+          resolve()
+        , 500
+
+    callMeReject = () ->
+      new Promise (resolve, reject) ->
+        setTimeout ->
+          reject()
+        , 500
+
+    @task.addTask callMeResolve
+    taskPromise = @task.addTask callMeReject
+
+    taskPromise
+      .then () ->
+        done('Should fail')
+      .catch () ->
+        done()
