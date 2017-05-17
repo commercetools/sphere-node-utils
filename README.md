@@ -176,6 +176,21 @@ task.addTask callMe
 .then (result) -> # result == true
 .catch (error) ->
 ```
+```coffeescript
+# adding and executing multiple tasks
+callMe(name) = ->
+  new Promise (resolve, reject) ->
+    setTimeout ->
+      resolve name
+    , 5000
+taskQueue = new TaskQueue
+task1Promise = taskQueue.addTask(() -> callMe('task1'))
+task2Promise = taskQueue.addTask(() -> callMe('task2'))
+
+Promise.all([task1Promise, task2Promise])
+.then (result) -> # result == ['task1', 'task2']
+.catch (error) ->
+```
 
 Available methods:
 - `setMaxParallel` sets the `maxParallel` parameter (default is `20`). **If < 1 or > 100 it throws an error**
