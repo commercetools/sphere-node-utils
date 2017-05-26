@@ -1,4 +1,4 @@
-![SPHERE.IO icon](https://admin.sphere.io/assets/images/sphere_logo_rgb_long.png)
+![commercetools logo](https://cdn.rawgit.com/commercetools/press-kit/master/PNG/72DPI/CT%20logo%20horizontal%20RGB%2072dpi.png)
 
 # Node.js Utils
 
@@ -6,7 +6,7 @@
 
 [![Build Status](https://secure.travis-ci.org/sphereio/sphere-node-utils.png?branch=master)](http://travis-ci.org/sphereio/sphere-node-utils) [![NPM version](https://badge.fury.io/js/sphere-node-utils.png)](http://badge.fury.io/js/sphere-node-utils) [![Coverage Status](https://coveralls.io/repos/sphereio/sphere-node-utils/badge.png)](https://coveralls.io/r/sphereio/sphere-node-utils) [![Dependency Status](https://david-dm.org/sphereio/sphere-node-utils.png?theme=shields.io)](https://david-dm.org/sphereio/sphere-node-utils) [![devDependency Status](https://david-dm.org/sphereio/sphere-node-utils/dev-status.png?theme=shields.io)](https://david-dm.org/sphereio/sphere-node-utils#info=devDependencies)
 
-This module shares helpers among all [SPHERE.IO](http://sphere.io/) Node.js components.
+This module shares helpers among all [commercetools](https://commercetools.com/) Node.js components.
 
 ## Table of Contents
 * [Getting Started](#getting-started)
