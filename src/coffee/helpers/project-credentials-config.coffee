@@ -78,13 +78,12 @@ class ProjectCredentialsConfig
 
   _readCsvConfig: (csvText) ->
     new Promise (resolve, reject) ->
-      csv().from(csvText, {delimiter: ":"})
-      .to.array (data) ->
+      csv.parse(csvText, {delimiter: ":"}, (data) ->
         dataJson = _.map data, (row) ->
           {project_key: row[0], client_id: row[1], client_secret: row[2]}
         resolve _.reduce dataJson, (acc, json) ->
           acc[json.project_key] = json; acc
-        , {}
+        , {})
       .on 'error', (error) -> reject error
 
   _getEnvCredetials: ->

@@ -11,7 +11,7 @@ module.exports = (grunt) ->
         '# <%= pkg.title || pkg.name %> - v<%= pkg.version %>\n' +
         '# ==============================================================\n' +
         '# Copyright (c) <%= grunt.template.today(\"yyyy\") %> <%= pkg.author.name %>\n' +
-        '# Licensed <%= _.pluck(pkg.licenses, \"type\").join(\", \") %>.\n' +
+        '# Licensed <%= _.map(pkg.licenses, \"type\").join(\", \") %>.\n' +
         '*/\n'
 
     coffeelint:
