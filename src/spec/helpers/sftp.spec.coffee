@@ -2,7 +2,7 @@ debug = require('debug')('spec:sftp')
 _ = require 'underscore'
 Promise = require 'bluebird'
 fs = Promise.promisifyAll require('fs')
-Connection = require 'ssh2'
+Connection = require('ssh2')
 SftpConfig = require('../../config').config.sftp
 {Sftp} = require '../../lib/main'
 
