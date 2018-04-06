@@ -52,8 +52,10 @@ describe 'ExtendedLogger', ->
             message: 'Oops'
             name: 'Error'
             stack: jasmine.any(String)
+            body: undefined
             code: undefined
             signal: undefined
+            statusCode: undefined
           project_key: 'foo'
           another_field: 'bar'
         , 'Oops, something went wrong'
@@ -68,7 +70,9 @@ describe 'ExtendedLogger', ->
               name: 'Error'
               stack: jasmine.any(String)
               code: undefined
+              body: undefined
               signal: undefined
+              statusCode: undefined
           project_key: 'foo'
           another_field: 'bar'
         , 'Oops, something went wrong'
