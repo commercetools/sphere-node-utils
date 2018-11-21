@@ -63,10 +63,10 @@
     "grunt-contrib-watch": "^1.1.0",
     "grunt-shell": "2.1.0",
     "istanbul": "0.4.5",
-    "jasmine-node": "^1.16.2",
+    "jasmine-node": "github:daern91/jasmine-node",
     "load-pkg": "^3.0.1",
     "sphere-coffeelint": "sphereio/sphere-coffeelint.git#master",
-    "sphere-node-sdk": "^3.0.0"
+    "sphere-node-sdk": "^2.1.2"
   },
   "keywords": []
 }
