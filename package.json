@@ -61,7 +61,7 @@
     "grunt-contrib-coffee": "2.1.0",
     "grunt-contrib-concat": "1.0.1",
     "grunt-contrib-watch": "^1.1.0",
-    "grunt-shell": "2.1.0",
+    "grunt-shell": "3.0.1",
     "istanbul": "0.4.5",
     "jasmine-node": "github:daern91/jasmine-node",
     "load-pkg": "^4.0.0",
