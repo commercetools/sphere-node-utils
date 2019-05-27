@@ -39,7 +39,7 @@
     "release": "grunt release"
   },
   "dependencies": {
-    "bluebird": "3.5.4",
+    "bluebird": "3.5.5",
     "bunyan": "1.8.12",
     "csv": "5.1.1",
     "debug": "4.1.1",
