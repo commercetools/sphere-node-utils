@@ -53,7 +53,7 @@
     "coffeelint": "^2.0.7",
     "coffeescript": "^2.1.1",
     "coveralls": "3.0.4",
-    "grunt": "^1.0.3",
+    "grunt": "^1.0.4",
     "grunt-bump": "0.8.0",
     "grunt-cli": "^1.2.0",
     "grunt-coffeelint": "0.0.16",
@@ -66,7 +66,7 @@
     "jasmine-node": "github:daern91/jasmine-node",
     "load-pkg": "^4.0.0",
     "sphere-coffeelint": "sphereio/sphere-coffeelint.git#master",
-    "sphere-node-sdk": "^2.1.2"
+    "sphere-node-sdk": "^2.4.1"
   },
   "keywords": []
 }
