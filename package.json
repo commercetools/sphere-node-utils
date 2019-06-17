@@ -41,7 +41,7 @@
   "dependencies": {
     "bluebird": "3.5.5",
     "bunyan": "1.8.12",
-    "csv": "5.1.1",
+    "csv": "^2.0.0",
     "debug": "4.1.1",
     "load-module-pkg": "^1.0.0",
     "q": "1.5.x",
@@ -64,7 +64,7 @@
     "grunt-shell": "3.0.1",
     "istanbul": "0.4.5",
     "jasmine-node": "github:daern91/jasmine-node",
-    "load-pkg": "^4.0.0",
+    "load-pkg": "^3.0.1",
     "sphere-coffeelint": "sphereio/sphere-coffeelint.git#master",
     "sphere-node-sdk": "^2.4.1"
   },
