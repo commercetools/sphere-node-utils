@@ -45,14 +45,14 @@
     "debug": "4.1.1",
     "load-module-pkg": "^1.0.0",
     "q": "1.5.x",
-    "ssh2": "0.8.4",
+    "ssh2": "0.8.5",
     "underscore": "1.9.1",
     "underscore.string": "3.3.5"
   },
   "devDependencies": {
     "coffeelint": "^2.0.7",
     "coffeescript": "^2.1.1",
-    "coveralls": "3.0.4",
+    "coveralls": "3.0.5",
     "grunt": "^1.0.4",
     "grunt-bump": "0.8.0",
     "grunt-cli": "^1.2.0",
