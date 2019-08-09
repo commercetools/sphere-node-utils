@@ -9,12 +9,10 @@
     "email": "hajo.eichler@commercetools.com",
     "url": "http://dev.sphere.io"
   },
-  "maintainers": [
-    {
-      "name": "Nicola Molinari",
-      "email": "nicola.molinari@commercetools.de"
-    }
-  ],
+  "maintainers": [{
+    "name": "Nicola Molinari",
+    "email": "nicola.molinari@commercetools.de"
+  }],
   "repository": {
     "type": "git",
     "url": "git://github.com/sphereio/sphere-node-utils.git"
@@ -22,12 +20,10 @@
   "bugs": {
     "url": "https://github.com/sphereio/sphere-node-utils/issues"
   },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "https://github.com/sphereio/sphere-node-utils/blob/master/LICENSE-MIT"
-    }
-  ],
+  "licenses": [{
+    "type": "MIT",
+    "url": "https://github.com/sphereio/sphere-node-utils/blob/master/LICENSE-MIT"
+  }],
   "main": "./lib/main",
   "engines": {
     "node": ">= 6"
@@ -43,11 +39,11 @@
     "bunyan": "1.8.12",
     "csv": "^2.0.0",
     "debug": "4.1.1",
-    "load-module-pkg": "^1.0.0",
     "q": "1.5.x",
     "ssh2": "0.8.5",
     "underscore": "1.9.1",
-    "underscore.string": "3.3.5"
+    "underscore.string": "3.3.5",
+    "sphere-node-sdk": "^2.5.0"
   },
   "devDependencies": {
     "coffeelint": "^2.0.7",
@@ -65,8 +61,7 @@
     "istanbul": "0.4.5",
     "jasmine-node": "github:daern91/jasmine-node",
     "load-pkg": "^3.0.1",
-    "sphere-coffeelint": "sphereio/sphere-coffeelint.git#master",
-    "sphere-node-sdk": "^2.4.1"
+    "sphere-coffeelint": "sphereio/sphere-coffeelint.git#master"
   },
   "keywords": []
 }
