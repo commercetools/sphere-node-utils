@@ -218,6 +218,8 @@ class Sftp
         password: @_options.password
       if @_options.port
         connectOpts['port'] = @_options.port
+      if @_options.readyTimeout
+        connectOpts['readyTimeout'] = @_options.readyTimeout
       if @_options.debug
         connectOpts['debug'] = (msg) -> debug msg
       @conn.connect connectOpts
