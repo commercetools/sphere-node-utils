@@ -12,6 +12,5 @@
   ],
   "lockFileMaintenance": {
     "enabled": true
-  },
-  "ignoreDeps": ["csv", "load-pkg"]
+  }
 }
