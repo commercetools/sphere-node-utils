@@ -88,6 +88,7 @@ module.exports = (grunt) ->
         push: true
         pushTo: 'origin'
         gitDescribeOptions: '--tags --always --abbrev=1 --dirty=-d'
+        prereleaseName: 'unstable'
 
   # load plugins that provide the tasks defined in the config
   grunt.loadNpmTasks 'grunt-bump'
