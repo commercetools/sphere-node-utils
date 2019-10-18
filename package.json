@@ -65,7 +65,7 @@
     "jasmine-node": "github:daern91/jasmine-node",
     "load-pkg": "^4.0.0",
     "sphere-coffeelint": "sphereio/sphere-coffeelint.git#master",
-    "sphere-node-sdk": "^2.4.1"
+    "sphere-node-sdk": "^3.0.1"
   },
   "keywords": []
 }
