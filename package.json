@@ -30,7 +30,7 @@
   ],
   "main": "./lib/main",
   "engines": {
-    "node": ">= 6"
+    "node": ">= 8"
   },
   "scripts": {
     "build": "grunt build",
