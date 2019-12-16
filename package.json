@@ -39,19 +39,19 @@
     "release": "grunt release"
   },
   "dependencies": {
-    "bluebird": "3.7.1",
+    "bluebird": "3.7.2",
     "bunyan": "1.8.12",
     "csv": "^5.1.3",
     "debug": "4.1.1",
     "q": "1.5.x",
-    "ssh2": "0.8.6",
+    "ssh2": "0.8.7",
     "underscore": "1.9.1",
     "underscore.string": "3.3.5"
   },
   "devDependencies": {
     "coffeelint": "^2.0.7",
     "coffeescript": "^2.1.1",
-    "coveralls": "3.0.7",
+    "coveralls": "3.0.9",
     "grunt": "^1.0.4",
     "grunt-bump": "0.8.0",
     "grunt-cli": "^1.2.0",
