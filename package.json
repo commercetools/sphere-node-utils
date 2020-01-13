@@ -45,7 +45,7 @@
     "debug": "4.1.1",
     "q": "1.5.x",
     "ssh2": "0.8.7",
-    "underscore": "1.9.1",
+    "underscore": "1.9.2",
     "underscore.string": "3.3.5"
   },
   "devDependencies": {
