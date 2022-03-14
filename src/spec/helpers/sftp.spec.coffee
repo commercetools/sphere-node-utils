@@ -78,7 +78,7 @@ describe 'SftpHelpers', ->
         done()
       .catch (error) -> done(error)
     .catch (error) ->
-      if error.message is 'No such file'
+      if error.code is 2
         done()
       else
         done(error)
